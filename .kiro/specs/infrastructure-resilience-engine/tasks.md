@@ -6,7 +6,7 @@
 
 **목표**: 모든 Core 인터페이스와 데이터 모델 정의
 
-- [ ] 1. 프로젝트 초기 설정
+- [x] 1. 프로젝트 초기 설정
   - Go 모듈 초기화 (`go mod init`)
   - 디렉토리 구조 생성 (pkg/core, pkg/adapters, pkg/plugins, cmd)
   - 기본 Makefile 작성 (build, test, lint 타겟)
