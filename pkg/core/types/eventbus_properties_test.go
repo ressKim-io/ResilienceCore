@@ -191,7 +191,7 @@ func TestProperty40_UnsubscribeStopsEventDelivery(t *testing.T) {
 				Resource:  Resource{ID: "test-resource"},
 			}
 
-			if err := bus.Publish(ctx, event1); err != nil {
+			if pubErr := bus.Publish(ctx, event1); pubErr != nil {
 				return false
 			}
 
@@ -212,7 +212,7 @@ func TestProperty40_UnsubscribeStopsEventDelivery(t *testing.T) {
 			}
 
 			// Unsubscribe
-			if err := sub.Unsubscribe(); err != nil {
+			if unsubErr := sub.Unsubscribe(); unsubErr != nil {
 				return false
 			}
 

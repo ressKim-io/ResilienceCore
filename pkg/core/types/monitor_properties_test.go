@@ -58,10 +58,9 @@ func TestProperty28_HealthCheckUsesRegisteredStrategy(t *testing.T) {
 			ctx := context.Background()
 
 			// Check health - should use the registered strategy for the resource's type
-			if _, err := monitor.CheckHealth(ctx, resource); err != nil {
-				// Error is acceptable for some strategies (e.g., exec not fully implemented)
-				// but we still want to verify the strategy was attempted
-			}
+			_, _ = monitor.CheckHealth(ctx, resource)
+			// Error is acceptable for some strategies (e.g., exec not fully implemented)
+			// but we still want to verify the strategy was attempted
 
 			// Verify the correct strategy was used
 			usedStrategy := monitor.GetLastUsedStrategy()
@@ -93,9 +92,9 @@ func TestProperty32_CustomHealthCheckStrategiesAreSupported(t *testing.T) {
 
 			// Create a custom health check strategy
 			customStrategy := &CustomHealthCheckStrategy{
-				name:           strategyName,
-				alwaysHealthy:  true,
-				customMessage:  "Custom health check passed",
+				name:          strategyName,
+				alwaysHealthy: true,
+				customMessage: "Custom health check passed",
 			}
 
 			// Register the custom strategy - this should work without Core modification
