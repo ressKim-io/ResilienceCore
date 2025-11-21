@@ -21,7 +21,6 @@ linters:
     - gosec
     - bodyclose
     - noctx
-    - exportloopref
 
 linters-settings:
   errcheck:
@@ -29,7 +28,8 @@ linters-settings:
     check-blank: true
   
   govet:
-    check-shadowing: true
+    enable:
+      - shadow  # Replaced check-shadowing (deprecated)
   
   gofmt:
     simplify: true

@@ -1,3 +1,5 @@
+// Package main provides the GrimOps chaos engineering tool.
+// GrimOps is a chaos engineering application built on the Infrastructure Resilience Engine.
 package main
 
 import (

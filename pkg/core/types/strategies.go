@@ -1,3 +1,5 @@
+// Package types provides core type definitions and interfaces for the Infrastructure Resilience Engine.
+// This file contains built-in execution strategy implementations.
 package types
 
 import (
@@ -25,11 +27,12 @@ func (s *SimpleStrategy) Execute(ctx context.Context, plugin Plugin, resource Re
 	endTime := time.Now()
 	status := StatusSuccess
 	if err != nil {
-		if err == context.DeadlineExceeded {
+		switch err {
+		case context.DeadlineExceeded:
 			status = StatusTimeout
-		} else if err == context.Canceled {
+		case context.Canceled:
 			status = StatusCanceled
-		} else {
+		default:
 			status = StatusFailed
 		}
 	}
@@ -130,9 +133,10 @@ func (c *CircuitBreakerStrategy) Execute(ctx context.Context, plugin Plugin, res
 	endTime := time.Now()
 	status := StatusSuccess
 	if err != nil {
-		if err == context.DeadlineExceeded {
+		switch err {
+		case context.DeadlineExceeded:
 			status = StatusTimeout
-		} else {
+		default:
 			status = StatusFailed
 		}
 	}

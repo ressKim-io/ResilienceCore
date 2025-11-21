@@ -1,4 +1,6 @@
-// Package types provides property-based tests for the ExecutionEngine interface
+// Package types provides property-based tests for the ExecutionEngine interface.
+// This file contains property-based tests validating execution strategies,
+// concurrency limits, and timeout handling.
 package types
 
 import (
@@ -168,24 +170,19 @@ func TestProperty24_TimeoutCancelsExecution(t *testing.T) {
 	properties := gopter.NewProperties(nil)
 
 	properties.Property("timeout cancels execution", prop.ForAll(
-		func(timeoutMs int, executionMs int) bool {
-			// Ensure valid test parameters
-			if timeoutMs < 10 || timeoutMs > 1000 {
-				timeoutMs = 100
-			}
-			if executionMs < 10 || executionMs > 2000 {
-				executionMs = 500
-			}
+		func(shouldTimeout bool) bool {
+			// Use deterministic test cases instead of random timing
+			var timeout time.Duration
+			var executionTime time.Duration
 
-			timeout := time.Duration(timeoutMs) * time.Millisecond
-			executionTime := time.Duration(executionMs) * time.Millisecond
-
-			// Add a buffer to account for timing variations
-			// Only test cases where there's a clear difference
-			// We need a larger buffer to account for goroutine scheduling and other timing variations
-			if executionTime > timeout && executionTime < timeout+100*time.Millisecond {
-				// Too close to timeout boundary, skip this test case
-				return true
+			if shouldTimeout {
+				// Clear timeout case: execution takes much longer than timeout
+				timeout = 50 * time.Millisecond
+				executionTime = 300 * time.Millisecond
+			} else {
+				// Clear success case: execution completes well before timeout
+				timeout = 300 * time.Millisecond
+				executionTime = 50 * time.Millisecond
 			}
 
 			// Create a mock execution engine
@@ -195,14 +192,14 @@ func TestProperty24_TimeoutCancelsExecution(t *testing.T) {
 			// Track if cleanup was called
 			cleanupCalled := false
 
-			// Create a plugin that takes longer than timeout
+			// Create a plugin that takes the specified time
 			plugin := &MockPluginWithFuncs{
 				metadata: PluginMetadata{
 					Name:    "slow-plugin",
 					Version: "1.0.0",
 				},
 				executeFunc: func(ctx PluginContext, resource Resource) error {
-					// Simulate long-running work
+					// Simulate work
 					select {
 					case <-time.After(executionTime):
 						return nil
@@ -236,18 +233,20 @@ func TestProperty24_TimeoutCancelsExecution(t *testing.T) {
 			ctx := context.Background()
 			result, _ := engine.Execute(ctx, request)
 
-			// If execution time significantly exceeds timeout, verify:
-			// 1. Execution was cancelled (status is timeout or canceled)
-			// 2. Cleanup was called
-			if executionTime > timeout+100*time.Millisecond {
-				return (result.Status == StatusTimeout || result.Status == StatusCanceled) && cleanupCalled
+			// Verify cleanup was always called
+			if !cleanupCalled {
+				return false
 			}
 
-			// If execution time is within timeout, it should succeed
+			// If we expected timeout, verify it happened
+			if shouldTimeout {
+				return result.Status == StatusTimeout || result.Status == StatusCanceled
+			}
+
+			// If we expected success, verify it succeeded
 			return result.Status == StatusSuccess
 		},
-		gen.IntRange(50, 200),
-		gen.IntRange(50, 400),
+		gen.Bool(),
 	))
 
 	properties.TestingRun(t, gopter.ConsoleReporter(false))
@@ -383,11 +382,12 @@ func (m *MockExecutionEngine) Execute(ctx context.Context, request ExecutionRequ
 	endTime := time.Now()
 	status := StatusSuccess
 	if err != nil {
-		if err == context.DeadlineExceeded {
+		switch err {
+		case context.DeadlineExceeded:
 			status = StatusTimeout
-		} else if err == context.Canceled {
+		case context.Canceled:
 			status = StatusCanceled
-		} else {
+		default:
 			status = StatusFailed
 		}
 	}

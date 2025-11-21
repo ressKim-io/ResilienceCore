@@ -1,3 +1,5 @@
+// Package main provides the NecroOps self-healing tool.
+// NecroOps is a self-healing application built on the Infrastructure Resilience Engine.
 package main
 
 import (
