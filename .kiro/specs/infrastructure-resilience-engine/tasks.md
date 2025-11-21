@@ -79,7 +79,7 @@
   - **Property 32: Custom health check strategies are supported**
   - **검증: 요구사항 6.1, 6.5**
 
-- [ ] 7. Reporter 인터페이스 정의
+- [x] 7. Reporter 인터페이스 정의
   - Reporter 인터페이스 정의
   - ExecutionRecord, EventQuery, ExecutionQuery 정의
   - Statistics, PluginStatistics, ResourceStatistics 정의
@@ -88,7 +88,7 @@
   - 내장 포맷터 정의 (JSONFormatter, MarkdownFormatter, HTMLFormatter)
   - _요구사항: 7.1, 7.2, 7.3, 7.4, 7.5_
 
-- [ ] 7.1 Reporter 속성 기반 테스트 작성
+- [x] 7.1 Reporter 속성 기반 테스트 작성
   - **Property 33: Execution record is complete**
   - **Property 35: Statistics are calculated correctly**
   - **Property 37: Custom storage backends are supported**
