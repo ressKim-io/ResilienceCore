@@ -539,3 +539,75 @@ type CircuitBreakerStrategy struct {
 type RateLimitStrategy struct {
 	RequestsPerSecond int
 }
+
+// ============================================================================
+// Monitor Types
+// ============================================================================
+
+// Monitor provides health checking and metrics collection with pluggable strategies
+type Monitor interface {
+	// Health checking
+	CheckHealth(ctx context.Context, resource Resource) (HealthStatus, error)
+	WaitForCondition(ctx context.Context, resource Resource, condition Condition, timeout time.Duration) error
+	WaitForHealthy(ctx context.Context, resource Resource, timeout time.Duration) error
+
+	// Metrics
+	CollectMetrics(ctx context.Context, resource Resource) (Metrics, error)
+
+	// Events
+	WatchEvents(ctx context.Context, resource Resource) (<-chan Event, error)
+
+	// Strategy management
+	RegisterHealthCheckStrategy(name string, strategy HealthCheckStrategy) error
+	GetHealthCheckStrategy(name string) (HealthCheckStrategy, error)
+}
+
+// HealthCheckStrategy defines how to check resource health
+type HealthCheckStrategy interface {
+	Check(ctx context.Context, resource Resource) (HealthStatus, error)
+	Name() string
+}
+
+// HealthStatus represents the health status of a resource
+type HealthStatus struct {
+	Status  HealthStatusType
+	Message string
+	Checks  []HealthCheck
+}
+
+// HealthStatusType represents the type of health status
+type HealthStatusType string
+
+// HealthStatusType constants
+const (
+	HealthStatusHealthy   HealthStatusType = "healthy"
+	HealthStatusUnhealthy HealthStatusType = "unhealthy"
+	HealthStatusUnknown   HealthStatusType = "unknown"
+)
+
+// HealthCheck represents a single health check result
+type HealthCheck struct {
+	Name    string
+	Status  HealthStatusType
+	Message string
+}
+
+// ============================================================================
+// Built-in Health Check Strategies
+// ============================================================================
+
+// HTTPHealthCheckStrategy checks health via HTTP endpoint
+type HTTPHealthCheckStrategy struct {
+	ExpectedStatusCodes []int
+	ExpectedBody        string
+}
+
+// TCPHealthCheckStrategy checks health via TCP connection
+type TCPHealthCheckStrategy struct {
+	DialTimeout time.Duration
+}
+
+// ExecHealthCheckStrategy checks health via command execution
+type ExecHealthCheckStrategy struct {
+	ExpectedExitCode int
+}

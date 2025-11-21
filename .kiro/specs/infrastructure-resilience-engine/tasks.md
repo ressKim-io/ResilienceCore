@@ -67,14 +67,14 @@
   - **Property 24: Timeout cancels execution**
   - **검증: 요구사항 5.1, 5.2, 5.3**
 
-- [ ] 6. Monitor 인터페이스 정의
+- [x] 6. Monitor 인터페이스 정의
   - Monitor 인터페이스 정의
   - HealthCheckStrategy 인터페이스 정의
   - HealthStatus, HealthStatusType, HealthCheck 정의
   - 내장 전략 정의 (HTTPHealthCheckStrategy, TCPHealthCheckStrategy, ExecHealthCheckStrategy)
   - _요구사항: 6.1, 6.2, 6.3, 6.4, 6.5_
 
-- [ ] 6.1 Monitor 속성 기반 테스트 작성
+- [x] 6.1 Monitor 속성 기반 테스트 작성
   - **Property 28: Health check uses registered strategy**
   - **Property 32: Custom health check strategies are supported**
   - **검증: 요구사항 6.1, 6.5**
