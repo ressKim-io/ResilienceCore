@@ -48,7 +48,7 @@ func TestProperty38_EventsAreDeliveredToAllMatchingSubscribers(t *testing.T) {
 				wg.Add(1)
 				go func(idx int, s Subscription) {
 					defer wg.Done()
-					timeout := time.After(2 * time.Second)
+					timeout := time.After(100 * time.Millisecond)
 					select {
 					case <-s.Events():
 						receivedCounts[idx]++
@@ -137,7 +137,7 @@ func TestProperty39_SubscriptionReceivesOnlyMatchingEvents(t *testing.T) {
 
 			// Try to receive event with timeout
 			received := false
-			timeout := time.After(500 * time.Millisecond)
+			timeout := time.After(50 * time.Millisecond)
 			select {
 			case <-sub.Events():
 				received = true
@@ -196,7 +196,7 @@ func TestProperty40_UnsubscribeStopsEventDelivery(t *testing.T) {
 			}
 
 			// Receive first event
-			timeout1 := time.After(500 * time.Millisecond)
+			timeout1 := time.After(50 * time.Millisecond)
 			receivedFirst := false
 			select {
 			case _, ok := <-sub.Events():
@@ -217,7 +217,7 @@ func TestProperty40_UnsubscribeStopsEventDelivery(t *testing.T) {
 			}
 
 			// Give time for unsubscribe to complete
-			time.Sleep(50 * time.Millisecond)
+			time.Sleep(10 * time.Millisecond)
 
 			// Create a new subscription to verify the bus still works
 			sub2, err := bus.Subscribe(ctx, EventFilter{
@@ -242,7 +242,7 @@ func TestProperty40_UnsubscribeStopsEventDelivery(t *testing.T) {
 			}
 
 			// The new subscription should receive the event
-			timeout2 := time.After(500 * time.Millisecond)
+			timeout2 := time.After(50 * time.Millisecond)
 			newSubReceived := false
 			select {
 			case _, ok := <-sub2.Events():
@@ -300,7 +300,7 @@ func (m *MockEventBus) Publish(ctx context.Context, event Event) error {
 			case sub.events <- event:
 			case <-ctx.Done():
 				return ctx.Err()
-			case <-time.After(100 * time.Millisecond):
+			case <-time.After(10 * time.Millisecond):
 				// Skip if subscriber is slow
 			}
 		}
