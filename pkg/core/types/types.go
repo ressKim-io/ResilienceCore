@@ -381,3 +381,161 @@ const (
 	StatusCanceled ExecutionStatus = "canceled"
 	StatusSkipped  ExecutionStatus = "skipped"
 )
+
+// ============================================================================
+// ExecutionEngine Types
+// ============================================================================
+
+// ExecutionEngine manages plugin execution with support for strategies, workflows, and concurrency control
+type ExecutionEngine interface {
+	// Plugin management
+	RegisterPlugin(plugin Plugin) error
+	UnregisterPlugin(name string) error
+	GetPlugin(name string) (Plugin, error)
+	ListPlugins(filter PluginFilter) ([]PluginMetadata, error)
+
+	// Execution
+	Execute(ctx context.Context, request ExecutionRequest) (ExecutionResult, error)
+	ExecuteAsync(ctx context.Context, request ExecutionRequest) (Future, error)
+
+	// Workflow
+	ExecuteWorkflow(ctx context.Context, workflow Workflow) (WorkflowResult, error)
+
+	// Control
+	Cancel(executionID string) error
+	GetStatus(executionID string) (ExecutionStatus, error)
+
+	// Configuration
+	SetConcurrencyLimit(limit int)
+	SetDefaultTimeout(timeout time.Duration)
+}
+
+// ExecutionRequest represents a request to execute a plugin
+type ExecutionRequest struct {
+	PluginName string
+	Resource   Resource
+	Config     PluginConfig
+	Strategy   ExecutionStrategy
+
+	// Security context
+	Principal string
+}
+
+// ExecutionStrategy defines how a plugin should be executed
+type ExecutionStrategy interface {
+	Execute(ctx context.Context, plugin Plugin, resource Resource) (ExecutionResult, error)
+	Name() string
+}
+
+// Future represents an asynchronous execution result
+type Future interface {
+	Wait() (ExecutionResult, error)
+	Cancel() error
+	Done() <-chan struct{}
+}
+
+// Workflow represents a multi-step execution workflow
+type Workflow struct {
+	Name  string
+	Steps []WorkflowStep
+}
+
+// WorkflowStep represents a single step in a workflow
+type WorkflowStep struct {
+	Name       string
+	PluginName string
+	Resource   Resource
+	Config     PluginConfig
+
+	// Dependencies
+	DependsOn []string // Step names
+
+	// Execution mode
+	Parallel bool // Execute in parallel with other parallel steps
+
+	// Conditional execution
+	Condition *StepCondition
+
+	// Error handling
+	OnError ErrorHandler
+}
+
+// StepCondition defines when a step should execute
+type StepCondition struct {
+	Type  ConditionType
+	Value interface{}
+}
+
+// ConditionType represents the type of condition
+type ConditionType string
+
+// ConditionType constants
+const (
+	ConditionAlways    ConditionType = "always"
+	ConditionOnSuccess ConditionType = "on_success"
+	ConditionOnFailure ConditionType = "on_failure"
+	ConditionCustom    ConditionType = "custom"
+)
+
+// ErrorHandler handles errors during workflow execution
+type ErrorHandler interface {
+	Handle(ctx context.Context, step WorkflowStep, err error) ErrorAction
+}
+
+// ErrorAction defines what action to take on error
+type ErrorAction string
+
+// ErrorAction constants
+const (
+	ErrorActionContinue ErrorAction = "continue"
+	ErrorActionAbort    ErrorAction = "abort"
+	ErrorActionRetry    ErrorAction = "retry"
+	ErrorActionRollback ErrorAction = "rollback"
+)
+
+// WorkflowResult represents the result of a workflow execution
+type WorkflowResult struct {
+	Status      ExecutionStatus
+	StepResults map[string]ExecutionResult
+	StartTime   time.Time
+	EndTime     time.Time
+	Duration    time.Duration
+}
+
+// PluginFilter defines criteria for filtering plugins
+type PluginFilter struct {
+	Names          []string
+	Versions       []string
+	SupportedKinds []string
+	Capabilities   []Capability
+}
+
+// ============================================================================
+// Built-in Execution Strategies
+// ============================================================================
+
+// SimpleStrategy executes a plugin without any special handling
+type SimpleStrategy struct{}
+
+// RetryStrategy retries failed executions with exponential backoff
+type RetryStrategy struct {
+	MaxRetries int
+	Backoff    BackoffStrategy
+}
+
+// BackoffStrategy defines how to calculate retry delays
+type BackoffStrategy interface {
+	NextDelay(attempt int) time.Duration
+}
+
+// CircuitBreakerStrategy implements circuit breaker pattern
+type CircuitBreakerStrategy struct {
+	FailureThreshold int
+	Timeout          time.Duration
+	ResetTimeout     time.Duration
+}
+
+// RateLimitStrategy limits execution rate
+type RateLimitStrategy struct {
+	RequestsPerSecond int
+}

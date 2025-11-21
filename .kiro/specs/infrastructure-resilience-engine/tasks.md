@@ -51,7 +51,7 @@
   - **Property 13: Rollback is invoked on failure**
   - **검증: 요구사항 3.1, 3.2, 3.3**
 
-- [ ] 5. ExecutionEngine 인터페이스 정의
+- [x] 5. ExecutionEngine 인터페이스 정의
   - ExecutionEngine 인터페이스 정의
   - ExecutionRequest, ExecutionStrategy 인터페이스 정의
   - Future 인터페이스 정의
@@ -61,7 +61,7 @@
   - _요구사항: 5.1, 5.2, 5.3, 5.4, 5.5, 5.6_
 
 
-- [ ] 5.1 ExecutionEngine 속성 기반 테스트 작성
+- [x] 5.1 ExecutionEngine 속성 기반 테스트 작성
   - **Property 22: Execution strategy is applied**
   - **Property 23: Concurrency limits are respected**
   - **Property 24: Timeout cancels execution**
