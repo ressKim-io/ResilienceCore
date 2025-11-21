@@ -254,3 +254,130 @@ type AdapterInfo struct {
 	Environment  string   // compose, kubernetes, ecs, nomad, etc.
 	Capabilities []string // List of supported features
 }
+
+// ============================================================================
+// Plugin System Types
+// ============================================================================
+
+// Plugin defines the contract for all feature implementations
+// Plugins are completely independent and can be developed without Core modification
+type Plugin interface {
+	// Metadata returns plugin metadata
+	Metadata() PluginMetadata
+
+	// Lifecycle hooks
+	Initialize(config PluginConfig) error
+	Validate(ctx PluginContext, resource Resource) error
+	PreExecute(ctx PluginContext, resource Resource) (Snapshot, error)
+	Execute(ctx PluginContext, resource Resource) error
+	PostExecute(ctx PluginContext, resource Resource, result ExecutionResult) error
+	Cleanup(ctx PluginContext, resource Resource) error
+
+	// Optional: Rollback support
+	Rollback(ctx PluginContext, resource Resource, snapshot Snapshot) error
+}
+
+// PluginMetadata contains plugin metadata
+type PluginMetadata struct {
+	Name        string
+	Version     string
+	Description string
+	Author      string
+
+	// Compatibility
+	SupportedKinds       []string     // Resource kinds this plugin supports (empty = all)
+	RequiredCapabilities []Capability // Required adapter capabilities
+
+	// Dependencies
+	Dependencies []PluginDependency
+
+	// Configuration schema
+	ConfigSchema interface{} // JSON schema for plugin configuration
+}
+
+// Capability represents a required capability
+type Capability string
+
+// Capability constants
+const (
+	CapabilityExec    Capability = "exec"    // Requires exec in resources
+	CapabilityNetwork Capability = "network" // Requires network manipulation
+	CapabilityAdmin   Capability = "admin"   // Requires admin privileges
+)
+
+// PluginDependency represents a plugin dependency
+type PluginDependency struct {
+	PluginName string
+	Version    string // Semantic version constraint (e.g., ">=1.0.0", "^2.0.0")
+}
+
+// PluginConfig is the interface for plugin configuration
+type PluginConfig interface {
+	Validate() error
+}
+
+// PluginContext provides context for plugin execution
+type PluginContext struct {
+	context.Context
+
+	// Execution metadata
+	ExecutionID string
+	Timeout     time.Duration
+
+	// Core components (will be defined in later tasks)
+	Env      EnvironmentAdapter
+	Monitor  interface{} // Monitor interface - to be defined
+	Reporter interface{} // Reporter interface - to be defined
+	EventBus interface{} // EventBus interface - to be defined
+	Logger   interface{} // Logger interface - to be defined
+	Tracer   interface{} // Tracer interface - to be defined
+
+	// Progress reporting
+	Progress chan<- ProgressUpdate
+
+	// Security
+	Principal string
+	Auth      interface{} // AuthorizationProvider - to be defined
+	Secrets   interface{} // SecretProvider - to be defined
+}
+
+// ProgressUpdate represents a progress update from a plugin
+type ProgressUpdate struct {
+	Percent int
+	Message string
+	Stage   string
+}
+
+// Snapshot captures resource state for rollback
+type Snapshot interface {
+	// Restore restores the resource to the state captured in this snapshot
+	Restore(ctx context.Context) error
+
+	// Serialize converts the snapshot to bytes for storage
+	Serialize() ([]byte, error)
+
+	// Deserialize reconstructs the snapshot from bytes
+	Deserialize(data []byte) error
+}
+
+// ExecutionResult represents the result of a plugin execution
+type ExecutionResult struct {
+	Status    ExecutionStatus
+	StartTime time.Time
+	EndTime   time.Time
+	Duration  time.Duration
+	Error     error
+	Metadata  map[string]interface{}
+}
+
+// ExecutionStatus represents the status of an execution
+type ExecutionStatus string
+
+// ExecutionStatus constants
+const (
+	StatusSuccess  ExecutionStatus = "success"
+	StatusFailed   ExecutionStatus = "failed"
+	StatusTimeout  ExecutionStatus = "timeout"
+	StatusCanceled ExecutionStatus = "canceled"
+	StatusSkipped  ExecutionStatus = "skipped"
+)
