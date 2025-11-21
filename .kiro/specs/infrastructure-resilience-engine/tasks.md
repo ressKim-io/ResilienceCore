@@ -37,7 +37,7 @@
   - **Property 21: Adapter interface is sufficient for all platforms**
   - **검증: 요구사항 4.1, 4.5**
 
-- [ ] 4. Plugin 인터페이스 정의
+- [x] 4. Plugin 인터페이스 정의
   - Plugin 인터페이스 정의 (Metadata, Initialize, Validate, PreExecute, Execute, PostExecute, Cleanup, Rollback)
   - PluginMetadata, PluginConfig, PluginContext 정의
   - Snapshot 인터페이스 정의
@@ -45,7 +45,7 @@
   - ProgressUpdate 정의
   - _요구사항: 3.1, 3.2, 3.3, 3.4, 3.5, 3.6_
 
-- [ ] 4.1 Plugin 속성 기반 테스트 작성
+- [x] 4.1 Plugin 속성 기반 테스트 작성
   - **Property 11: Plugin metadata is complete**
   - **Property 12: Plugin lifecycle hooks execute in order**
   - **Property 13: Rollback is invoked on failure**
