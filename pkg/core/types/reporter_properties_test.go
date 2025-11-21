@@ -89,11 +89,11 @@ func TestProperty33_ExecutionRecordIsComplete(t *testing.T) {
 
 			return true
 		},
-		gen.Identifier(),                                                                           // pluginName
-		gen.Identifier(),                                                                           // resourceID
-		gen.Identifier(),                                                                           // resourceName
+		gen.Identifier(), // pluginName
+		gen.Identifier(), // resourceID
+		gen.Identifier(), // resourceName
 		gen.OneConstOf(StatusSuccess, StatusFailed, StatusTimeout, StatusCanceled, StatusSkipped), // status
-		gen.Identifier(),                                                                           // principal
+		gen.Identifier(), // principal
 	))
 
 	properties.TestingRun(t, gopter.ConsoleReporter(false))
@@ -322,7 +322,7 @@ func TestProperty37_CustomStorageBackendsAreSupported(t *testing.T) {
 			}
 
 			// 4. Delete
-			if err := backend.Delete(ctx, key); err != nil {
+			if delErr := backend.Delete(ctx, key); delErr != nil {
 				return false
 			}
 

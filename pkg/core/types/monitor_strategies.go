@@ -81,7 +81,11 @@ func (h *HTTPHealthCheckStrategy) Check(ctx context.Context, resource Resource) 
 			},
 		}, err
 	}
-	defer resp.Body.Close()
+	defer func() {
+		if closeErr := resp.Body.Close(); closeErr != nil {
+			_ = closeErr // Ignore close error
+		}
+	}()
 
 	// Check status code
 	expectedCodes := h.ExpectedStatusCodes
@@ -215,7 +219,11 @@ func (t *TCPHealthCheckStrategy) Check(ctx context.Context, resource Resource) (
 			},
 		}, err
 	}
-	defer conn.Close()
+	defer func() {
+		if closeErr := conn.Close(); closeErr != nil {
+			_ = closeErr // Ignore close error
+		}
+	}()
 
 	return HealthStatus{
 		Status:  HealthStatusHealthy,

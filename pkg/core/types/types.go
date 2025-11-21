@@ -783,3 +783,34 @@ type MarkdownFormatter struct{}
 
 // HTMLFormatter formats reports as HTML
 type HTMLFormatter struct{}
+
+// ============================================================================
+// EventBus Types
+// ============================================================================
+
+// EventBus enables loose coupling between components through publish-subscribe messaging
+type EventBus interface {
+	// Publishing
+	Publish(ctx context.Context, event Event) error
+	PublishAsync(ctx context.Context, event Event) error
+
+	// Subscribing
+	Subscribe(ctx context.Context, filter EventFilter) (Subscription, error)
+
+	// Lifecycle
+	Close() error
+}
+
+// EventFilter defines criteria for filtering events
+type EventFilter struct {
+	Types    []string          // Filter by event types
+	Sources  []string          // Filter by event sources
+	Metadata map[string]string // Filter by metadata key-value pairs
+}
+
+// Subscription represents an active event subscription
+type Subscription interface {
+	ID() string
+	Events() <-chan Event
+	Unsubscribe() error
+}
