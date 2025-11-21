@@ -105,13 +105,13 @@
   - **Property 40: Unsubscribe stops event delivery**
   - **검증: 요구사항 8.1, 8.2, 8.3**
 
-- [ ] 9. Config 인터페이스 정의
+- [x] 9. Config 인터페이스 정의
   - Config 인터페이스 정의
   - ConfigProvider 인터페이스, ConfigChange 정의
   - 내장 프로바이더 정의 (YAMLConfigProvider, EnvironmentConfigProvider, ConsulConfigProvider, VaultConfigProvider)
   - _요구사항: 9.1, 9.2, 9.3, 9.4, 9.5_
 
-- [ ] 9.1 Config 속성 기반 테스트 작성
+- [x] 9.1 Config 속성 기반 테스트 작성
   - **Property 43: Multiple config providers are supported**
   - **Property 44: Config merge follows precedence**
   - **Property 47: Custom config providers are supported**
