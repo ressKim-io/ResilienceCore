@@ -611,3 +611,175 @@ type TCPHealthCheckStrategy struct {
 type ExecHealthCheckStrategy struct {
 	ExpectedExitCode int
 }
+
+// ============================================================================
+// Reporter Types
+// ============================================================================
+
+// Reporter records execution results and generates reports with pluggable storage and formatters
+type Reporter interface {
+	// Recording
+	RecordEvent(ctx context.Context, event Event) error
+	RecordExecution(ctx context.Context, exec ExecutionRecord) error
+
+	// Querying
+	QueryEvents(ctx context.Context, query EventQuery) ([]Event, error)
+	QueryExecutions(ctx context.Context, query ExecutionQuery) ([]ExecutionRecord, error)
+
+	// Statistics
+	ComputeStatistics(ctx context.Context, filter StatisticsFilter) (Statistics, error)
+
+	// Reporting
+	GenerateReport(ctx context.Context, format string, filter ReportFilter) ([]byte, error)
+
+	// Storage management
+	SetStorage(storage StorageBackend) error
+
+	// Formatter management
+	RegisterFormatter(name string, formatter ReportFormatter) error
+}
+
+// ExecutionRecord represents a recorded plugin execution
+type ExecutionRecord struct {
+	ID           string
+	PluginName   string
+	ResourceID   string
+	ResourceName string
+	StartTime    time.Time
+	EndTime      time.Time
+	Duration     time.Duration
+	Status       ExecutionStatus
+	Error        string
+	Metadata     map[string]interface{}
+
+	// Security
+	Principal string
+}
+
+// EventQuery defines criteria for querying events
+type EventQuery struct {
+	Types     []string
+	Sources   []string
+	Resources []string
+	StartTime time.Time
+	EndTime   time.Time
+	Limit     int
+	Offset    int
+}
+
+// ExecutionQuery defines criteria for querying executions
+type ExecutionQuery struct {
+	PluginNames []string
+	ResourceIDs []string
+	Statuses    []ExecutionStatus
+	StartTime   time.Time
+	EndTime     time.Time
+	Limit       int
+	Offset      int
+}
+
+// StatisticsFilter defines criteria for computing statistics
+type StatisticsFilter struct {
+	PluginNames []string
+	ResourceIDs []string
+	StartTime   time.Time
+	EndTime     time.Time
+}
+
+// Statistics represents aggregated execution statistics
+type Statistics struct {
+	TotalExecutions int
+	SuccessCount    int
+	FailureCount    int
+	TimeoutCount    int
+	CanceledCount   int
+	SuccessRate     float64
+
+	// Time to recovery
+	MTTR time.Duration // Mean Time To Recovery
+
+	// Duration statistics
+	AverageDuration time.Duration
+	P50Duration     time.Duration
+	P95Duration     time.Duration
+	P99Duration     time.Duration
+	MinDuration     time.Duration
+	MaxDuration     time.Duration
+
+	// Breakdown
+	ByPlugin   map[string]PluginStatistics
+	ByResource map[string]ResourceStatistics
+}
+
+// PluginStatistics represents statistics for a specific plugin
+type PluginStatistics struct {
+	PluginName      string
+	TotalExecutions int
+	SuccessCount    int
+	FailureCount    int
+	SuccessRate     float64
+	AverageDuration time.Duration
+}
+
+// ResourceStatistics represents statistics for a specific resource
+type ResourceStatistics struct {
+	ResourceID      string
+	ResourceName    string
+	TotalExecutions int
+	SuccessCount    int
+	FailureCount    int
+	SuccessRate     float64
+	AverageDuration time.Duration
+}
+
+// ReportFilter defines criteria for generating reports
+type ReportFilter struct {
+	PluginNames []string
+	ResourceIDs []string
+	StartTime   time.Time
+	EndTime     time.Time
+}
+
+// StorageBackend defines the interface for pluggable storage backends
+type StorageBackend interface {
+	Save(ctx context.Context, key string, value interface{}) error
+	Load(ctx context.Context, key string) (interface{}, error)
+	Query(ctx context.Context, query Query) ([]interface{}, error)
+	Delete(ctx context.Context, key string) error
+	Close() error
+}
+
+// Query defines a query for the storage backend
+type Query struct {
+	Collection string
+	Filter     map[string]interface{}
+	Sort       []SortField
+	Limit      int
+	Offset     int
+}
+
+// SortField defines a field to sort by
+type SortField struct {
+	Field      string
+	Descending bool
+}
+
+// ReportFormatter defines the interface for report formatters
+type ReportFormatter interface {
+	Format(ctx context.Context, data interface{}) ([]byte, error)
+	ContentType() string
+	Name() string
+}
+
+// ============================================================================
+// Built-in Report Formatters
+// ============================================================================
+
+// JSONFormatter formats reports as JSON
+type JSONFormatter struct{}
+
+// MarkdownFormatter formats reports as Markdown
+type MarkdownFormatter struct{}
+
+// HTMLFormatter formats reports as HTML
+type HTMLFormatter struct{}
