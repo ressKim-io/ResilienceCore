@@ -878,3 +878,47 @@ type VaultConfigProvider struct {
 	Token   string // Vault token
 	Path    string // Secret path in Vault
 }
+
+// ============================================================================
+// Security Types
+// ============================================================================
+
+// AuthorizationProvider defines the interface for authorization checks
+type AuthorizationProvider interface {
+	Authorize(ctx context.Context, principal string, action Action, resource Resource) error
+}
+
+// Action represents an action to be authorized
+type Action struct {
+	Verb     string // get, list, create, update, delete, execute
+	Resource string // Resource kind or specific resource ID
+}
+
+// AuditLogger defines the interface for audit logging
+type AuditLogger interface {
+	LogAction(ctx context.Context, entry AuditEntry) error
+}
+
+// AuditEntry represents an audit log entry
+type AuditEntry struct {
+	Timestamp time.Time
+	Principal string
+	Action    Action
+	Resource  Resource
+	Result    ActionResult
+	Metadata  map[string]interface{}
+}
+
+// ActionResult represents the result of an action
+type ActionResult struct {
+	Success  bool
+	Error    string
+	Duration time.Duration
+}
+
+// SecretProvider defines the interface for secret management
+type SecretProvider interface {
+	GetSecret(ctx context.Context, key string) (string, error)
+	SetSecret(ctx context.Context, key string, value string) error
+	DeleteSecret(ctx context.Context, key string) error
+}

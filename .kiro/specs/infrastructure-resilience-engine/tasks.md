@@ -118,13 +118,13 @@
   - **검증: 요구사항 9.1, 9.2, 9.5**
 
 
-- [ ] 10. 보안 인터페이스 정의
+- [x] 10. 보안 인터페이스 정의
   - AuthorizationProvider 인터페이스, Action 정의
   - AuditLogger 인터페이스, AuditEntry, ActionResult 정의
   - SecretProvider 인터페이스 정의
   - _요구사항: 10.1, 10.2, 10.3, 10.4, 10.5_
 
-- [ ] 10.1 보안 속성 기반 테스트 작성
+- [x] 10.1 보안 속성 기반 테스트 작성
   - **Property 48: Authorization is checked before execution**
   - **Property 50: Secrets are not exposed in logs**
   - **Property 52: Custom security providers are supported**
