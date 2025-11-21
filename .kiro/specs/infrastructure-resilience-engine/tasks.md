@@ -94,12 +94,12 @@
   - **Property 37: Custom storage backends are supported**
   - **검증: 요구사항 7.1, 7.3, 7.5**
 
-- [ ] 8. EventBus 인터페이스 정의
+- [x] 8. EventBus 인터페이스 정의
   - EventBus 인터페이스 정의
   - EventFilter, Subscription 인터페이스 정의
   - _요구사항: 8.1, 8.2, 8.3, 8.4, 8.5_
 
-- [ ] 8.1 EventBus 속성 기반 테스트 작성
+- [x] 8.1 EventBus 속성 기반 테스트 작성
   - **Property 38: Events are delivered to all matching subscribers**
   - **Property 39: Subscription receives only matching events**
   - **Property 40: Unsubscribe stops event delivery**
