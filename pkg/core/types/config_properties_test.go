@@ -55,11 +55,7 @@ func TestProperty43_MultipleConfigProvidersAreSupported(t *testing.T) {
 
 			// Verify we can get the value (should be from highest priority provider)
 			_, err := config.Get(key)
-			if err != nil {
-				return false
-			}
-
-			return true
+			return err == nil
 		},
 		gen.IntRange(1, 5),
 		gen.Identifier(),
@@ -293,18 +289,15 @@ func (m *MockConfig) Set(key string, value interface{}) error {
 	watchers := m.watchers[key]
 	m.mu.Unlock()
 
-	// Notify watchers
-	for _, ch := range watchers {
-		select {
-		case ch <- value:
-		case <-time.After(10 * time.Millisecond):
-			// Skip slow watchers
-		}
-	}
-
-	// If value changed, notify watchers
+	// Notify watchers if value changed
 	if oldValue != value {
-		// Watchers already notified above
+		for _, ch := range watchers {
+			select {
+			case ch <- value:
+			case <-time.After(10 * time.Millisecond):
+				// Skip slow watchers
+			}
+		}
 	}
 
 	return nil
