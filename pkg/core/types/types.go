@@ -922,3 +922,118 @@ type SecretProvider interface {
 	SetSecret(ctx context.Context, key string, value string) error
 	DeleteSecret(ctx context.Context, key string) error
 }
+
+// ============================================================================
+// Observability Types
+// ============================================================================
+
+// ObservabilityProvider provides logging, metrics, and tracing capabilities
+type ObservabilityProvider interface {
+	Logger() Logger
+	Metrics() MetricsCollector
+	Tracer() Tracer
+}
+
+// Logger defines the interface for structured logging
+type Logger interface {
+	Debug(msg string, fields ...Field)
+	Info(msg string, fields ...Field)
+	Warn(msg string, fields ...Field)
+	Error(msg string, fields ...Field)
+	With(fields ...Field) Logger
+}
+
+// Field represents a structured log field
+type Field struct {
+	Key   string
+	Value interface{}
+}
+
+// MetricsCollector defines the interface for metrics collection
+type MetricsCollector interface {
+	Counter(name string, tags map[string]string) Counter
+	Gauge(name string, tags map[string]string) Gauge
+	Histogram(name string, tags map[string]string) Histogram
+}
+
+// Counter represents a monotonically increasing counter metric
+type Counter interface {
+	Inc()
+	Add(delta float64)
+}
+
+// Gauge represents a gauge metric that can go up or down
+type Gauge interface {
+	Set(value float64)
+	Inc()
+	Dec()
+	Add(delta float64)
+}
+
+// Histogram represents a histogram metric for tracking distributions
+type Histogram interface {
+	Observe(value float64)
+}
+
+// Tracer defines the interface for distributed tracing
+type Tracer interface {
+	StartSpan(ctx context.Context, name string, opts ...SpanOption) (context.Context, Span)
+}
+
+// Span represents a single span in a distributed trace
+type Span interface {
+	SetTag(key string, value interface{})
+	LogEvent(event string)
+	LogFields(fields ...Field)
+	Finish()
+	Context() context.Context
+}
+
+// SpanOption is a function that configures a span
+type SpanOption func(*SpanConfig)
+
+// SpanConfig contains configuration for a span
+type SpanConfig struct {
+	Tags   map[string]interface{}
+	Parent Span
+}
+
+// ============================================================================
+// Plugin Registry Types
+// ============================================================================
+
+// PluginRegistry manages plugin discovery, validation, and lifecycle
+type PluginRegistry interface {
+	// Registration
+	Register(plugin Plugin) error
+	Unregister(name string) error
+
+	// Discovery
+	Discover(path string) error
+	DiscoverFromDirectory(dir string) error
+
+	// Retrieval
+	Get(name string) (Plugin, error)
+	List(filter PluginFilter) ([]PluginMetadata, error)
+
+	// Validation
+	Validate(plugin Plugin) error
+	ValidateDependencies(plugin Plugin) error
+
+	// Hot-reload
+	Reload(name string) error
+
+	// Loader management
+	SetLoader(loader PluginLoader) error
+}
+
+// PluginLoader defines the interface for loading plugins
+type PluginLoader interface {
+	Load(path string) (Plugin, error)
+	Unload(plugin Plugin) error
+}
+
+// PluginValidator defines the interface for validating plugins
+type PluginValidator interface {
+	Validate(plugin Plugin) error
+}
