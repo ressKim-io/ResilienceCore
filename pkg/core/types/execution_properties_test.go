@@ -115,8 +115,8 @@ func TestProperty23_ConcurrencyLimitsAreRespected(t *testing.T) {
 					}
 					mu.Unlock()
 
-					// Simulate work
-					time.Sleep(10 * time.Millisecond)
+					// Simulate work (reduced for faster tests)
+					time.Sleep(1 * time.Millisecond)
 
 					// Decrement concurrent counter
 					atomic.AddInt32(&currentConcurrent, -1)
@@ -177,12 +177,12 @@ func TestProperty24_TimeoutCancelsExecution(t *testing.T) {
 
 			if shouldTimeout {
 				// Clear timeout case: execution takes much longer than timeout
-				timeout = 50 * time.Millisecond
-				executionTime = 300 * time.Millisecond
+				timeout = 10 * time.Millisecond
+				executionTime = 50 * time.Millisecond
 			} else {
 				// Clear success case: execution completes well before timeout
-				timeout = 300 * time.Millisecond
-				executionTime = 50 * time.Millisecond
+				timeout = 50 * time.Millisecond
+				executionTime = 5 * time.Millisecond
 			}
 
 			// Create a mock execution engine

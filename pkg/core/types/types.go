@@ -814,3 +814,67 @@ type Subscription interface {
 	Events() <-chan Event
 	Unsubscribe() error
 }
+
+// ============================================================================
+// Config Types
+// ============================================================================
+
+// Config supports multiple configuration sources with precedence and hot-reloading
+type Config interface {
+	// Access
+	Get(key string) (interface{}, error)
+	GetString(key string) (string, error)
+	GetInt(key string) (int, error)
+	GetBool(key string) (bool, error)
+	GetDuration(key string) (time.Duration, error)
+
+	// Modification
+	Set(key string, value interface{}) error
+
+	// Watching
+	Watch(key string) (<-chan interface{}, error)
+
+	// Provider management
+	AddProvider(provider ConfigProvider, priority int) error
+}
+
+// ConfigProvider defines the interface for configuration sources
+type ConfigProvider interface {
+	Load(ctx context.Context) (map[string]interface{}, error)
+	Watch(ctx context.Context) (<-chan ConfigChange, error)
+	Name() string
+}
+
+// ConfigChange represents a configuration change event
+type ConfigChange struct {
+	Key      string
+	OldValue interface{}
+	NewValue interface{}
+}
+
+// ============================================================================
+// Built-in Config Providers
+// ============================================================================
+
+// YAMLConfigProvider loads configuration from YAML files
+type YAMLConfigProvider struct {
+	FilePath string
+}
+
+// EnvironmentConfigProvider loads configuration from environment variables
+type EnvironmentConfigProvider struct {
+	Prefix string // Prefix for environment variables (e.g., "APP_")
+}
+
+// ConsulConfigProvider loads configuration from HashiCorp Consul
+type ConsulConfigProvider struct {
+	Address string // Consul address
+	Prefix  string // Key prefix in Consul
+}
+
+// VaultConfigProvider loads configuration from HashiCorp Vault
+type VaultConfigProvider struct {
+	Address string // Vault address
+	Token   string // Vault token
+	Path    string // Secret path in Vault
+}

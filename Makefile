@@ -39,12 +39,12 @@ build-necroops:
 ## test: Run unit tests
 test:
 	@echo "Running unit tests..."
-	$(GOTEST) -v -cover ./...
+	$(GOTEST) -v -cover -parallel 4 ./...
 
 ## test-race: Run tests with race detector
 test-race:
 	@echo "Running tests with race detector..."
-	$(GOTEST) -v -race ./...
+	$(GOTEST) -v -race -parallel 4 ./...
 
 ## test-integration: Run integration tests
 test-integration:
