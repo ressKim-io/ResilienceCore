@@ -180,10 +180,9 @@ func TestProperty52_CustomSecurityProvidersAreSupported(t *testing.T) {
 			// Verify AuthorizationProvider works
 			resource := Resource{ID: "test-id", Name: "test", Kind: "container"}
 			action := Action{Verb: "execute", Resource: "test-id"}
-			if err := authProvider.Authorize(ctx, principal, action, resource); err != nil {
-				// Some providers may deny, but they should not panic or fail to execute
-				// The important thing is the interface works
-			}
+			// Some providers may deny, but they should not panic or fail to execute
+			// The important thing is the interface works
+			_ = authProvider.Authorize(ctx, principal, action, resource)
 
 			// Verify AuditLogger works
 			auditEntry := AuditEntry{
