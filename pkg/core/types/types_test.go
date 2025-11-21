@@ -44,9 +44,9 @@ func TestProperty_ResourceContainsEnvironmentAgnosticFields(t *testing.T) {
 			return hasID && hasName && hasKind && hasLabels && hasAnnotations &&
 				hasStatus && hasSpec && hasMetadata
 		},
-		gen.Identifier(),                    // id
-		gen.Identifier(),                    // name
-		gen.Identifier(),                    // kind
+		gen.Identifier(), // id
+		gen.Identifier(), // name
+		gen.Identifier(), // kind
 		gen.MapOf(gen.Identifier(), gen.Identifier()), // labels
 		gen.MapOf(gen.Identifier(), gen.Identifier()), // annotations
 	))
@@ -80,7 +80,7 @@ func TestProperty_ResourceSupportsArbitraryMetadata(t *testing.T) {
 			return exists && retrieved == value
 		},
 		gen.Identifier(), // key
-		gen.OneGenOf(     // value - various types
+		gen.OneGenOf( // value - various types
 			gen.Int(),
 			gen.Int64(),
 			gen.Float64(),
@@ -120,8 +120,8 @@ func TestProperty_ResourceSupportsArbitraryMetadata(t *testing.T) {
 			retrievedNested, nestedExists := retrievedMap[nestedKey]
 			return nestedExists && retrievedNested == nestedValue
 		},
-		gen.Identifier(), // key
-		gen.Identifier(), // nestedKey
+		gen.Identifier(),  // key
+		gen.Identifier(),  // nestedKey
 		gen.AlphaString(), // nestedValue
 	))
 

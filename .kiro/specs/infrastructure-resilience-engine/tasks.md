@@ -13,26 +13,26 @@
   - GitHub Actions CI 설정 (테스트, 린트)
   - _요구사항: 모든 요구사항의 기반_
 
-- [ ] 2. 데이터 모델 정의
+- [x] 2. 데이터 모델 정의
   - Resource 구조체 및 관련 타입 정의 (ResourceStatus, ResourceSpec, Condition 등)
   - HealthCheckConfig, Port, Volume, VolumeSource 정의
   - Metrics 구조체 정의 (CPUMetrics, MemoryMetrics, NetworkMetrics, DiskMetrics)
   - Event 구조체 정의
   - _요구사항: 2.1, 2.3, 2.4_
 
-- [ ] 2.1 데이터 모델 속성 기반 테스트 작성
+- [x] 2.1 데이터 모델 속성 기반 테스트 작성
   - **Property 6: Resource contains environment-agnostic fields**
   - **Property 8: Resource supports arbitrary metadata**
   - **검증: 요구사항 2.1, 2.3**
 
-- [ ] 3. EnvironmentAdapter 인터페이스 정의
+- [x] 3. EnvironmentAdapter 인터페이스 정의
   - EnvironmentAdapter 인터페이스 정의
   - AdapterConfig, ResourceFilter, LabelSelector 정의
   - ResourceEvent, DeleteOptions, ExecOptions, ExecResult 정의
   - AdapterInfo 정의
   - _요구사항: 4.1, 4.2, 4.3, 4.4, 4.5_
 
-- [ ] 3.1 EnvironmentAdapter 속성 기반 테스트 작성
+- [x] 3.1 EnvironmentAdapter 속성 기반 테스트 작성
   - **Property 17: Adapter provides all required methods**
   - **Property 21: Adapter interface is sufficient for all platforms**
   - **검증: 요구사항 4.1, 4.5**

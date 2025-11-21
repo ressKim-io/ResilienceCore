@@ -1,6 +1,7 @@
 package types
 
 import (
+	"context"
 	"io"
 	"time"
 )
@@ -36,10 +37,10 @@ type ResourceStatus struct {
 
 // Condition represents a detailed condition of a resource
 type Condition struct {
-	Type               string    // Ready, Healthy, Initialized, etc.
-	Status             string    // True, False, Unknown
-	Reason             string    // CamelCase reason
-	Message            string    // Human-readable message
+	Type               string // Ready, Healthy, Initialized, etc.
+	Status             string // True, False, Unknown
+	Reason             string // CamelCase reason
+	Message            string // Human-readable message
 	LastTransitionTime time.Time
 }
 
@@ -143,6 +144,7 @@ type Event struct {
 // EventType represents the type of resource event
 type EventType string
 
+// Event type constants
 const (
 	EventAdded    EventType = "Added"
 	EventModified EventType = "Modified"
@@ -174,4 +176,81 @@ type ExecResult struct {
 	Stdout   string
 	Stderr   string
 	ExitCode int
+}
+
+// EnvironmentAdapter abstracts all environment-specific operations
+// Each infrastructure platform (docker-compose, K8s, ECS, etc.) implements this interface
+type EnvironmentAdapter interface {
+	// Lifecycle
+	Initialize(ctx context.Context, config AdapterConfig) error
+	Close() error
+
+	// Resource discovery and management
+	ListResources(ctx context.Context, filter ResourceFilter) ([]Resource, error)
+	GetResource(ctx context.Context, id string) (Resource, error)
+
+	// Resource operations
+	StartResource(ctx context.Context, id string) error
+	StopResource(ctx context.Context, id string, gracePeriod time.Duration) error
+	RestartResource(ctx context.Context, id string) error
+	DeleteResource(ctx context.Context, id string, options DeleteOptions) error
+	CreateResource(ctx context.Context, spec ResourceSpec) (Resource, error)
+	UpdateResource(ctx context.Context, id string, spec ResourceSpec) (Resource, error)
+
+	// Real-time monitoring
+	WatchResources(ctx context.Context, filter ResourceFilter) (<-chan ResourceEvent, error)
+
+	// Execution
+	ExecInResource(ctx context.Context, id string, cmd []string, options ExecOptions) (ExecResult, error)
+
+	// Metrics
+	GetMetrics(ctx context.Context, id string) (Metrics, error)
+
+	// Metadata
+	GetAdapterInfo() AdapterInfo
+}
+
+// AdapterConfig contains environment-specific configuration
+type AdapterConfig struct {
+	// Environment-specific configuration
+	// For Compose: docker socket path, compose file path
+	// For K8s: kubeconfig path, namespace
+	// For ECS: region, cluster name
+	Config map[string]interface{}
+}
+
+// ResourceFilter defines criteria for filtering resources
+type ResourceFilter struct {
+	// Label selectors
+	LabelSelector LabelSelector
+
+	// Field selectors
+	Kinds    []string // Filter by resource kind
+	Statuses []string // Filter by status phase
+	Names    []string // Filter by name (supports wildcards)
+
+	// Pagination
+	Limit  int
+	Offset int
+}
+
+// LabelSelector defines label-based selection criteria
+type LabelSelector struct {
+	MatchLabels      map[string]string     // Equality-based (AND)
+	MatchExpressions []SelectorRequirement // Set-based
+}
+
+// SelectorRequirement defines a single selector requirement
+type SelectorRequirement struct {
+	Key      string
+	Operator string // In, NotIn, Exists, DoesNotExist, Equals, NotEquals
+	Values   []string
+}
+
+// AdapterInfo provides metadata about an adapter
+type AdapterInfo struct {
+	Name         string
+	Version      string
+	Environment  string   // compose, kubernetes, ecs, nomad, etc.
+	Capabilities []string // List of supported features
 }
