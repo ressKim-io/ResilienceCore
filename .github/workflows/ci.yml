@@ -12,7 +12,8 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        go-version: ['1.21', '1.22']
+        # Test only latest Go version on PRs, full matrix on main
+        go-version: ${{ github.event_name == 'pull_request' && fromJSON('["1.22"]') || fromJSON('["1.21", "1.22"]') }}
     
     steps:
     - name: Checkout code
@@ -36,16 +37,11 @@ jobs:
     - name: Download dependencies
       run: go mod download
     
-    - name: Run tests
-      run: make test
+    - name: Run tests with coverage
+      run: go test -v -race -coverprofile=coverage.out -covermode=atomic ./...
     
-    - name: Run tests with race detector
-      run: make test-race
-    
-    - name: Generate coverage report
-      run: |
-        go test -coverprofile=coverage.out ./...
-        go tool cover -func=coverage.out
+    - name: Display coverage summary
+      run: go tool cover -func=coverage.out
     
     - name: Upload coverage to Codecov
       uses: codecov/codecov-action@v3
