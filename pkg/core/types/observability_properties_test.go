@@ -150,11 +150,7 @@ func TestProperty55_TraceSpanIsCreatedAndPropagated(t *testing.T) {
 
 			// Verify span context can be retrieved
 			spanCtx := span.Context()
-			if spanCtx == nil {
-				return false
-			}
-
-			return true
+			return spanCtx != nil
 		},
 		gen.Identifier(),
 		gen.Identifier(),

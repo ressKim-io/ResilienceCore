@@ -6,6 +6,11 @@ import (
 	"strings"
 )
 
+// contextKey is a custom type for context keys to avoid collisions
+type contextKey string
+
+const spanContextKey contextKey = "span"
+
 // ============================================================================
 // Shared Mock Logger Implementation
 // ============================================================================
@@ -16,12 +21,14 @@ type MockLogger struct {
 	Fields  []Field
 }
 
+// LogEntry represents a single log entry captured by MockLogger
 type LogEntry struct {
 	Level   string
 	Message string
 	Fields  []Field
 }
 
+// NewMockLogger creates a new MockLogger instance
 func NewMockLogger() *MockLogger {
 	return &MockLogger{
 		Entries: make([]LogEntry, 0),
@@ -29,6 +36,7 @@ func NewMockLogger() *MockLogger {
 	}
 }
 
+// Debug logs a debug message with structured fields
 func (m *MockLogger) Debug(msg string, fields ...Field) {
 	m.Entries = append(m.Entries, LogEntry{
 		Level:   "debug",
@@ -37,6 +45,7 @@ func (m *MockLogger) Debug(msg string, fields ...Field) {
 	})
 }
 
+// Info logs an info message with structured fields
 func (m *MockLogger) Info(msg string, fields ...Field) {
 	m.Entries = append(m.Entries, LogEntry{
 		Level:   "info",
@@ -45,6 +54,7 @@ func (m *MockLogger) Info(msg string, fields ...Field) {
 	})
 }
 
+// Warn logs a warning message with structured fields
 func (m *MockLogger) Warn(msg string, fields ...Field) {
 	m.Entries = append(m.Entries, LogEntry{
 		Level:   "warn",
@@ -53,6 +63,7 @@ func (m *MockLogger) Warn(msg string, fields ...Field) {
 	})
 }
 
+// Error logs an error message with structured fields
 func (m *MockLogger) Error(msg string, fields ...Field) {
 	m.Entries = append(m.Entries, LogEntry{
 		Level:   "error",
@@ -61,6 +72,7 @@ func (m *MockLogger) Error(msg string, fields ...Field) {
 	})
 }
 
+// With returns a new logger with additional fields
 func (m *MockLogger) With(fields ...Field) Logger {
 	newLogger := &MockLogger{
 		Entries: m.Entries,
@@ -80,6 +92,7 @@ type MockMetricsCollector struct {
 	Histograms map[string]*MockHistogram
 }
 
+// NewMockMetricsCollector creates a new MockMetricsCollector instance
 func NewMockMetricsCollector() *MockMetricsCollector {
 	return &MockMetricsCollector{
 		Counters:   make(map[string]*MockCounter),
@@ -88,6 +101,7 @@ func NewMockMetricsCollector() *MockMetricsCollector {
 	}
 }
 
+// Counter returns a counter metric with the given name and tags
 func (m *MockMetricsCollector) Counter(name string, tags map[string]string) Counter {
 	key := m.metricKey(name, tags)
 	if _, exists := m.Counters[key]; !exists {
@@ -96,6 +110,7 @@ func (m *MockMetricsCollector) Counter(name string, tags map[string]string) Coun
 	return m.Counters[key]
 }
 
+// Gauge returns a gauge metric with the given name and tags
 func (m *MockMetricsCollector) Gauge(name string, tags map[string]string) Gauge {
 	key := m.metricKey(name, tags)
 	if _, exists := m.Gauges[key]; !exists {
@@ -104,6 +119,7 @@ func (m *MockMetricsCollector) Gauge(name string, tags map[string]string) Gauge 
 	return m.Gauges[key]
 }
 
+// Histogram returns a histogram metric with the given name and tags
 func (m *MockMetricsCollector) Histogram(name string, tags map[string]string) Histogram {
 	key := m.metricKey(name, tags)
 	if _, exists := m.Histograms[key]; !exists {
@@ -128,10 +144,12 @@ type MockCounter struct {
 	Value float64
 }
 
+// Inc increments the counter by 1
 func (m *MockCounter) Inc() {
 	m.Value++
 }
 
+// Add adds the given delta to the counter
 func (m *MockCounter) Add(delta float64) {
 	m.Value += delta
 }
@@ -143,18 +161,22 @@ type MockGauge struct {
 	Value float64
 }
 
+// Set sets the gauge to the given value
 func (m *MockGauge) Set(value float64) {
 	m.Value = value
 }
 
+// Inc increments the gauge by 1
 func (m *MockGauge) Inc() {
 	m.Value++
 }
 
+// Dec decrements the gauge by 1
 func (m *MockGauge) Dec() {
 	m.Value--
 }
 
+// Add adds the given delta to the gauge
 func (m *MockGauge) Add(delta float64) {
 	m.Value += delta
 }
@@ -166,6 +188,7 @@ type MockHistogram struct {
 	Values []float64
 }
 
+// Observe records a value in the histogram
 func (m *MockHistogram) Observe(value float64) {
 	m.Values = append(m.Values, value)
 }
@@ -179,12 +202,14 @@ type MockTracer struct {
 	Spans []*MockSpan
 }
 
+// NewMockTracer creates a new MockTracer instance
 func NewMockTracer() *MockTracer {
 	return &MockTracer{
 		Spans: make([]*MockSpan, 0),
 	}
 }
 
+// StartSpan creates a new span and returns a context containing it
 func (m *MockTracer) StartSpan(ctx context.Context, name string, opts ...SpanOption) (context.Context, Span) {
 	config := &SpanConfig{
 		Tags: make(map[string]interface{}),
@@ -206,7 +231,7 @@ func (m *MockTracer) StartSpan(ctx context.Context, name string, opts ...SpanOpt
 	m.Spans = append(m.Spans, span)
 
 	// Create a new context with the span
-	newCtx := context.WithValue(ctx, "span", span)
+	newCtx := context.WithValue(ctx, spanContextKey, span)
 
 	return newCtx, span
 }
@@ -221,22 +246,27 @@ type MockSpan struct {
 	ctx      context.Context
 }
 
+// SetTag sets a tag on the span
 func (m *MockSpan) SetTag(key string, value interface{}) {
 	m.Tags[key] = value
 }
 
+// LogEvent logs an event on the span
 func (m *MockSpan) LogEvent(event string) {
 	m.Events = append(m.Events, event)
 }
 
+// LogFields logs structured fields on the span
 func (m *MockSpan) LogFields(fields ...Field) {
 	m.Fields = append(m.Fields, fields...)
 }
 
+// Finish marks the span as finished
 func (m *MockSpan) Finish() {
 	m.Finished = true
 }
 
+// Context returns the context associated with the span
 func (m *MockSpan) Context() context.Context {
 	return m.ctx
 }
@@ -250,14 +280,17 @@ type MockObservabilityProvider struct {
 	name string
 }
 
+// Logger returns a mock logger instance
 func (m *MockObservabilityProvider) Logger() Logger {
 	return NewMockLogger()
 }
 
+// Metrics returns a mock metrics collector instance
 func (m *MockObservabilityProvider) Metrics() MetricsCollector {
 	return NewMockMetricsCollector()
 }
 
+// Tracer returns a mock tracer instance
 func (m *MockObservabilityProvider) Tracer() Tracer {
 	return NewMockTracer()
 }
