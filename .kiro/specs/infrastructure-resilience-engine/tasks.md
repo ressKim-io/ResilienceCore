@@ -130,14 +130,14 @@
   - **Property 52: Custom security providers are supported**
   - **검증: 요구사항 10.1, 10.3, 10.5**
 
-- [ ] 11. Observability 인터페이스 정의
+- [x] 11. Observability 인터페이스 정의
   - ObservabilityProvider 인터페이스 정의
   - Logger 인터페이스, Field 정의
   - MetricsCollector 인터페이스, Counter, Gauge, Histogram 인터페이스 정의
   - Tracer 인터페이스, Span 인터페이스, SpanOption, SpanConfig 정의
   - _요구사항: 11.1, 11.2, 11.3, 11.4, 11.5_
 
-- [ ] 11.1 Observability 속성 기반 테스트 작성
+- [x] 11.1 Observability 속성 기반 테스트 작성
   - **Property 53: Logs contain structured fields**
   - **Property 55: Trace span is created and propagated**
   - **Property 57: Custom observability providers are supported**

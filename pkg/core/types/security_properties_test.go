@@ -90,9 +90,7 @@ func TestProperty50_SecretsAreNotExposedInLogs(t *testing.T) {
 			}
 
 			// Create mock logger that captures log output
-			logger := &MockLogger{
-				entries: []string{},
-			}
+			logEntries := []string{}
 
 			// Retrieve secret
 			retrievedSecret, err := secretProvider.GetSecret(ctx, secretKey)
@@ -107,10 +105,11 @@ func TestProperty50_SecretsAreNotExposedInLogs(t *testing.T) {
 
 			// Simulate logging operation that should NOT log the secret value
 			// Only log the key reference, which is safe
-			logger.Info(fmt.Sprintf("Retrieved secret for key: %s", secretKey))
+			logEntry := fmt.Sprintf("Retrieved secret for key: %s", secretKey)
+			logEntries = append(logEntries, logEntry)
 
 			// Verify that the secret value is NOT in any log entry
-			for _, entry := range logger.entries {
+			for _, entry := range logEntries {
 				if strings.Contains(entry, secretValue) {
 					// Secret was exposed in logs - property violated!
 					return false
@@ -119,7 +118,7 @@ func TestProperty50_SecretsAreNotExposedInLogs(t *testing.T) {
 
 			// Verify that the secret key CAN be in logs (it's not sensitive)
 			hasKeyReference := false
-			for _, entry := range logger.entries {
+			for _, entry := range logEntries {
 				if strings.Contains(entry, secretKey) {
 					hasKeyReference = true
 					break
@@ -277,23 +276,6 @@ func (m *MockSecretProvider) SetSecret(ctx context.Context, key string, value st
 func (m *MockSecretProvider) DeleteSecret(ctx context.Context, key string) error {
 	delete(m.secrets, key)
 	return nil
-}
-
-// MockLogger captures log entries for testing
-type MockLogger struct {
-	entries []string
-}
-
-func (m *MockLogger) Info(msg string) {
-	m.entries = append(m.entries, msg)
-}
-
-func (m *MockLogger) Debug(msg string) {
-	m.entries = append(m.entries, msg)
-}
-
-func (m *MockLogger) Error(msg string) {
-	m.entries = append(m.entries, msg)
 }
 
 // Custom provider implementations to test interface extensibility
