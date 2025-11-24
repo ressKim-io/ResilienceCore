@@ -231,10 +231,10 @@ func (b *ResourceBuilder) Build() types.Resource {
 
 // WorkflowTestRunner provides utilities for testing workflows
 type WorkflowTestRunner struct {
-	harness         *TestHarness
-	executedSteps   map[string]bool
-	skippedSteps    map[string]bool
-	stepResults     map[string]types.ExecutionResult
+	harness       *TestHarness
+	executedSteps map[string]bool
+	skippedSteps  map[string]bool
+	stepResults   map[string]types.ExecutionResult
 }
 
 // NewWorkflowTestRunner creates a new WorkflowTestRunner

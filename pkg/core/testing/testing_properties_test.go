@@ -34,7 +34,7 @@ func TestProperty58_MockImplementationsExistForAllInterfaces(t *testing.T) {
 
 			// Test basic operations
 			ctx := context.Background()
-			
+
 			// Initialize
 			if err := adapter.Initialize(ctx, types.AdapterConfig{}); err != nil {
 				t.Logf("MockEnvironmentAdapter.Initialize failed: %v", err)
@@ -94,7 +94,8 @@ func TestProperty58_MockImplementationsExistForAllInterfaces(t *testing.T) {
 				return false
 			}
 
-			if err := plugin.Initialize(nil); err != nil {
+			err = plugin.Initialize(nil)
+			if err != nil {
 				t.Logf("MockPlugin.Initialize failed: %v", err)
 				return false
 			}
@@ -142,7 +143,8 @@ func TestProperty58_MockImplementationsExistForAllInterfaces(t *testing.T) {
 				Timestamp: time.Now(),
 				Resource:  resource,
 			}
-			if err := reporter.RecordEvent(ctx, event); err != nil {
+			err = reporter.RecordEvent(ctx, event)
+			if err != nil {
 				t.Logf("MockReporter.RecordEvent failed: %v", err)
 				return false
 			}
@@ -162,7 +164,8 @@ func TestProperty58_MockImplementationsExistForAllInterfaces(t *testing.T) {
 			var _ types.EventBus = eventBus
 
 			// Test event bus operations
-			if err := eventBus.Publish(ctx, event); err != nil {
+			err = eventBus.Publish(ctx, event)
+			if err != nil {
 				t.Logf("MockEventBus.Publish failed: %v", err)
 				return false
 			}
@@ -358,11 +361,11 @@ func TestProperty58_MocksTrackMethodCalls(t *testing.T) {
 			// Test adapter call tracking
 			adapter := NewMockEnvironmentAdapter()
 			adapter.Initialize(ctx, types.AdapterConfig{})
-			
+
 			for i := uint8(0); i < callCount; i++ {
 				adapter.ListResources(ctx, types.ResourceFilter{})
 			}
-			
+
 			if adapter.ListResourcesCalls != int(callCount) {
 				t.Logf("Expected %d ListResources calls, got %d", callCount, adapter.ListResourcesCalls)
 				return false
@@ -372,11 +375,11 @@ func TestProperty58_MocksTrackMethodCalls(t *testing.T) {
 			plugin := NewMockPlugin("test")
 			plugin.Initialize(nil)
 			pluginCtx := types.PluginContext{Context: ctx}
-			
+
 			for i := uint8(0); i < callCount; i++ {
 				plugin.Execute(pluginCtx, types.Resource{})
 			}
-			
+
 			if plugin.ExecuteCalls != int(callCount) {
 				t.Logf("Expected %d Execute calls, got %d", callCount, plugin.ExecuteCalls)
 				return false
@@ -387,7 +390,7 @@ func TestProperty58_MocksTrackMethodCalls(t *testing.T) {
 			for i := uint8(0); i < callCount; i++ {
 				monitor.CheckHealth(ctx, types.Resource{})
 			}
-			
+
 			if monitor.CheckHealthCalls != int(callCount) {
 				t.Logf("Expected %d CheckHealth calls, got %d", callCount, monitor.CheckHealthCalls)
 				return false
@@ -398,7 +401,7 @@ func TestProperty58_MocksTrackMethodCalls(t *testing.T) {
 			for i := uint8(0); i < callCount; i++ {
 				reporter.RecordEvent(ctx, types.Event{})
 			}
-			
+
 			if reporter.RecordEventCalls != int(callCount) {
 				t.Logf("Expected %d RecordEvent calls, got %d", callCount, reporter.RecordEventCalls)
 				return false
@@ -409,7 +412,7 @@ func TestProperty58_MocksTrackMethodCalls(t *testing.T) {
 			for i := uint8(0); i < callCount; i++ {
 				eventBus.Publish(ctx, types.Event{})
 			}
-			
+
 			if eventBus.PublishCalls != int(callCount) {
 				t.Logf("Expected %d Publish calls, got %d", callCount, eventBus.PublishCalls)
 				return false
@@ -516,7 +519,7 @@ func TestProperty58_TestHarnessProviesAllComponents(t *testing.T) {
 
 			// Verify components are functional
 			ctx := context.Background()
-			
+
 			// Test adapter
 			if err := harness.Adapter.Initialize(ctx, types.AdapterConfig{}); err != nil {
 				t.Logf("Adapter initialization failed: %v", err)

@@ -20,13 +20,13 @@ type MockEnvironmentAdapter struct {
 	mu sync.RWMutex
 
 	// State
-	Resources      map[string]types.Resource
-	Initialized    bool
-	Closed         bool
-	WatchChannels  []chan types.ResourceEvent
-	MetricsData    map[string]types.Metrics
-	ExecResults    map[string]types.ExecResult
-	
+	Resources     map[string]types.Resource
+	Initialized   bool
+	Closed        bool
+	WatchChannels []chan types.ResourceEvent
+	MetricsData   map[string]types.Metrics
+	ExecResults   map[string]types.ExecResult
+
 	// Behavior configuration
 	InitializeError      error
 	ListResourcesError   error
@@ -39,7 +39,7 @@ type MockEnvironmentAdapter struct {
 	UpdateResourceError  error
 	ExecError            error
 	GetMetricsError      error
-	
+
 	// Call tracking
 	InitializeCalls      int
 	ListResourcesCalls   int
@@ -69,12 +69,12 @@ func NewMockEnvironmentAdapter() *MockEnvironmentAdapter {
 func (m *MockEnvironmentAdapter) Initialize(ctx context.Context, config types.AdapterConfig) error {
 	m.mu.Lock()
 	defer m.mu.Unlock()
-	
+
 	m.InitializeCalls++
 	if m.InitializeError != nil {
 		return m.InitializeError
 	}
-	
+
 	m.Initialized = true
 	return nil
 }
@@ -83,16 +83,16 @@ func (m *MockEnvironmentAdapter) Initialize(ctx context.Context, config types.Ad
 func (m *MockEnvironmentAdapter) Close() error {
 	m.mu.Lock()
 	defer m.mu.Unlock()
-	
+
 	m.CloseCalls++
 	m.Closed = true
-	
+
 	// Close all watch channels
 	for _, ch := range m.WatchChannels {
 		close(ch)
 	}
 	m.WatchChannels = nil
-	
+
 	return nil
 }
 
@@ -100,19 +100,19 @@ func (m *MockEnvironmentAdapter) Close() error {
 func (m *MockEnvironmentAdapter) ListResources(ctx context.Context, filter types.ResourceFilter) ([]types.Resource, error) {
 	m.mu.RLock()
 	defer m.mu.RUnlock()
-	
+
 	m.ListResourcesCalls++
 	if m.ListResourcesError != nil {
 		return nil, m.ListResourcesError
 	}
-	
+
 	var result []types.Resource
 	for _, resource := range m.Resources {
 		if m.matchesFilter(resource, filter) {
 			result = append(result, resource)
 		}
 	}
-	
+
 	return result, nil
 }
 
@@ -120,17 +120,17 @@ func (m *MockEnvironmentAdapter) ListResources(ctx context.Context, filter types
 func (m *MockEnvironmentAdapter) GetResource(ctx context.Context, id string) (types.Resource, error) {
 	m.mu.RLock()
 	defer m.mu.RUnlock()
-	
+
 	m.GetResourceCalls++
 	if m.GetResourceError != nil {
 		return types.Resource{}, m.GetResourceError
 	}
-	
+
 	resource, exists := m.Resources[id]
 	if !exists {
 		return types.Resource{}, fmt.Errorf("resource not found: %s", id)
 	}
-	
+
 	return resource, nil
 }
 
@@ -138,21 +138,21 @@ func (m *MockEnvironmentAdapter) GetResource(ctx context.Context, id string) (ty
 func (m *MockEnvironmentAdapter) StartResource(ctx context.Context, id string) error {
 	m.mu.Lock()
 	defer m.mu.Unlock()
-	
+
 	m.StartResourceCalls++
 	if m.StartResourceError != nil {
 		return m.StartResourceError
 	}
-	
+
 	resource, exists := m.Resources[id]
 	if !exists {
 		return fmt.Errorf("resource not found: %s", id)
 	}
-	
+
 	resource.Status.Phase = "running"
 	m.Resources[id] = resource
 	m.emitEvent(types.EventModified, resource)
-	
+
 	return nil
 }
 
@@ -160,21 +160,21 @@ func (m *MockEnvironmentAdapter) StartResource(ctx context.Context, id string) e
 func (m *MockEnvironmentAdapter) StopResource(ctx context.Context, id string, gracePeriod time.Duration) error {
 	m.mu.Lock()
 	defer m.mu.Unlock()
-	
+
 	m.StopResourceCalls++
 	if m.StopResourceError != nil {
 		return m.StopResourceError
 	}
-	
+
 	resource, exists := m.Resources[id]
 	if !exists {
 		return fmt.Errorf("resource not found: %s", id)
 	}
-	
+
 	resource.Status.Phase = "stopped"
 	m.Resources[id] = resource
 	m.emitEvent(types.EventModified, resource)
-	
+
 	return nil
 }
 
@@ -182,21 +182,21 @@ func (m *MockEnvironmentAdapter) StopResource(ctx context.Context, id string, gr
 func (m *MockEnvironmentAdapter) RestartResource(ctx context.Context, id string) error {
 	m.mu.Lock()
 	defer m.mu.Unlock()
-	
+
 	m.RestartResourceCalls++
 	if m.RestartResourceError != nil {
 		return m.RestartResourceError
 	}
-	
+
 	resource, exists := m.Resources[id]
 	if !exists {
 		return fmt.Errorf("resource not found: %s", id)
 	}
-	
+
 	resource.Status.Phase = "running"
 	m.Resources[id] = resource
 	m.emitEvent(types.EventModified, resource)
-	
+
 	return nil
 }
 
@@ -204,20 +204,20 @@ func (m *MockEnvironmentAdapter) RestartResource(ctx context.Context, id string)
 func (m *MockEnvironmentAdapter) DeleteResource(ctx context.Context, id string, options types.DeleteOptions) error {
 	m.mu.Lock()
 	defer m.mu.Unlock()
-	
+
 	m.DeleteResourceCalls++
 	if m.DeleteResourceError != nil {
 		return m.DeleteResourceError
 	}
-	
+
 	resource, exists := m.Resources[id]
 	if !exists {
 		return fmt.Errorf("resource not found: %s", id)
 	}
-	
+
 	delete(m.Resources, id)
 	m.emitEvent(types.EventDeleted, resource)
-	
+
 	return nil
 }
 
@@ -225,12 +225,12 @@ func (m *MockEnvironmentAdapter) DeleteResource(ctx context.Context, id string, 
 func (m *MockEnvironmentAdapter) CreateResource(ctx context.Context, spec types.ResourceSpec) (types.Resource, error) {
 	m.mu.Lock()
 	defer m.mu.Unlock()
-	
+
 	m.CreateResourceCalls++
 	if m.CreateResourceError != nil {
 		return types.Resource{}, m.CreateResourceError
 	}
-	
+
 	resource := types.Resource{
 		ID:   fmt.Sprintf("resource-%d", len(m.Resources)+1),
 		Name: fmt.Sprintf("resource-%d", len(m.Resources)+1),
@@ -243,10 +243,10 @@ func (m *MockEnvironmentAdapter) CreateResource(ctx context.Context, spec types.
 		Annotations: make(map[string]string),
 		Metadata:    make(map[string]interface{}),
 	}
-	
+
 	m.Resources[resource.ID] = resource
 	m.emitEvent(types.EventAdded, resource)
-	
+
 	return resource, nil
 }
 
@@ -254,21 +254,21 @@ func (m *MockEnvironmentAdapter) CreateResource(ctx context.Context, spec types.
 func (m *MockEnvironmentAdapter) UpdateResource(ctx context.Context, id string, spec types.ResourceSpec) (types.Resource, error) {
 	m.mu.Lock()
 	defer m.mu.Unlock()
-	
+
 	m.UpdateResourceCalls++
 	if m.UpdateResourceError != nil {
 		return types.Resource{}, m.UpdateResourceError
 	}
-	
+
 	resource, exists := m.Resources[id]
 	if !exists {
 		return types.Resource{}, fmt.Errorf("resource not found: %s", id)
 	}
-	
+
 	resource.Spec = spec
 	m.Resources[id] = resource
 	m.emitEvent(types.EventModified, resource)
-	
+
 	return resource, nil
 }
 
@@ -276,15 +276,15 @@ func (m *MockEnvironmentAdapter) UpdateResource(ctx context.Context, id string, 
 func (m *MockEnvironmentAdapter) WatchResources(ctx context.Context, filter types.ResourceFilter) (<-chan types.ResourceEvent, error) {
 	m.mu.Lock()
 	defer m.mu.Unlock()
-	
+
 	ch := make(chan types.ResourceEvent, 100)
 	m.WatchChannels = append(m.WatchChannels, ch)
-	
+
 	// Send initial events for existing resources
 	go func() {
 		m.mu.RLock()
 		defer m.mu.RUnlock()
-		
+
 		for _, resource := range m.Resources {
 			if m.matchesFilter(resource, filter) {
 				select {
@@ -295,7 +295,7 @@ func (m *MockEnvironmentAdapter) WatchResources(ctx context.Context, filter type
 			}
 		}
 	}()
-	
+
 	return ch, nil
 }
 
@@ -303,21 +303,21 @@ func (m *MockEnvironmentAdapter) WatchResources(ctx context.Context, filter type
 func (m *MockEnvironmentAdapter) ExecInResource(ctx context.Context, id string, cmd []string, options types.ExecOptions) (types.ExecResult, error) {
 	m.mu.Lock()
 	defer m.mu.Unlock()
-	
+
 	m.ExecCalls++
 	if m.ExecError != nil {
 		return types.ExecResult{}, m.ExecError
 	}
-	
+
 	if _, exists := m.Resources[id]; !exists {
 		return types.ExecResult{}, fmt.Errorf("resource not found: %s", id)
 	}
-	
+
 	// Return pre-configured result if available
 	if result, exists := m.ExecResults[id]; exists {
 		return result, nil
 	}
-	
+
 	// Default success result
 	return types.ExecResult{
 		Stdout:   "command output",
@@ -330,21 +330,21 @@ func (m *MockEnvironmentAdapter) ExecInResource(ctx context.Context, id string, 
 func (m *MockEnvironmentAdapter) GetMetrics(ctx context.Context, id string) (types.Metrics, error) {
 	m.mu.RLock()
 	defer m.mu.RUnlock()
-	
+
 	m.GetMetricsCalls++
 	if m.GetMetricsError != nil {
 		return types.Metrics{}, m.GetMetricsError
 	}
-	
+
 	if _, exists := m.Resources[id]; !exists {
 		return types.Metrics{}, fmt.Errorf("resource not found: %s", id)
 	}
-	
+
 	// Return pre-configured metrics if available
 	if metrics, exists := m.MetricsData[id]; exists {
 		return metrics, nil
 	}
-	
+
 	// Default metrics
 	return types.Metrics{
 		Timestamp:  time.Now(),
@@ -354,7 +354,7 @@ func (m *MockEnvironmentAdapter) GetMetrics(ctx context.Context, id string) (typ
 			UsageCores:   1.0,
 		},
 		Memory: types.MemoryMetrics{
-			UsageBytes:   1024 * 1024 * 512, // 512 MB
+			UsageBytes:   1024 * 1024 * 512,  // 512 MB
 			LimitBytes:   1024 * 1024 * 1024, // 1 GB
 			UsagePercent: 50.0,
 		},
@@ -377,7 +377,7 @@ func (m *MockEnvironmentAdapter) GetAdapterInfo() types.AdapterInfo {
 func (m *MockEnvironmentAdapter) AddResource(resource types.Resource) {
 	m.mu.Lock()
 	defer m.mu.Unlock()
-	
+
 	m.Resources[resource.ID] = resource
 }
 
@@ -385,7 +385,7 @@ func (m *MockEnvironmentAdapter) AddResource(resource types.Resource) {
 func (m *MockEnvironmentAdapter) SetExecResult(resourceID string, result types.ExecResult) {
 	m.mu.Lock()
 	defer m.mu.Unlock()
-	
+
 	m.ExecResults[resourceID] = result
 }
 
@@ -393,7 +393,7 @@ func (m *MockEnvironmentAdapter) SetExecResult(resourceID string, result types.E
 func (m *MockEnvironmentAdapter) SetMetrics(resourceID string, metrics types.Metrics) {
 	m.mu.Lock()
 	defer m.mu.Unlock()
-	
+
 	m.MetricsData[resourceID] = metrics
 }
 
@@ -411,7 +411,7 @@ func (m *MockEnvironmentAdapter) matchesFilter(resource types.Resource, filter t
 			return false
 		}
 	}
-	
+
 	// Check statuses
 	if len(filter.Statuses) > 0 {
 		found := false
@@ -425,7 +425,7 @@ func (m *MockEnvironmentAdapter) matchesFilter(resource types.Resource, filter t
 			return false
 		}
 	}
-	
+
 	// Check label selector
 	if len(filter.LabelSelector.MatchLabels) > 0 {
 		for key, value := range filter.LabelSelector.MatchLabels {
@@ -434,7 +434,7 @@ func (m *MockEnvironmentAdapter) matchesFilter(resource types.Resource, filter t
 			}
 		}
 	}
-	
+
 	return true
 }
 
@@ -443,7 +443,7 @@ func (m *MockEnvironmentAdapter) emitEvent(eventType types.EventType, resource t
 		Type:     eventType,
 		Resource: resource,
 	}
-	
+
 	for _, ch := range m.WatchChannels {
 		select {
 		case ch <- event:
@@ -460,13 +460,13 @@ func (m *MockEnvironmentAdapter) emitEvent(eventType types.EventType, resource t
 // MockPlugin is a mock implementation of Plugin for testing
 type MockPlugin struct {
 	mu sync.RWMutex
-	
+
 	// Configuration
 	PluginMetadata types.PluginMetadata
-	
+
 	// State
 	Initialized bool
-	
+
 	// Behavior configuration
 	InitializeError  error
 	ValidateError    error
@@ -475,7 +475,7 @@ type MockPlugin struct {
 	PostExecuteError error
 	CleanupError     error
 	RollbackError    error
-	
+
 	// Call tracking
 	InitializeCalls  int
 	ValidateCalls    int
@@ -484,7 +484,7 @@ type MockPlugin struct {
 	PostExecuteCalls int
 	CleanupCalls     int
 	RollbackCalls    int
-	
+
 	// Captured arguments
 	LastValidateResource    *types.Resource
 	LastPreExecuteResource  *types.Resource
@@ -493,7 +493,7 @@ type MockPlugin struct {
 	LastCleanupResource     *types.Resource
 	LastRollbackResource    *types.Resource
 	LastRollbackSnapshot    types.Snapshot
-	
+
 	// Snapshot to return from PreExecute
 	SnapshotToReturn types.Snapshot
 }
@@ -514,7 +514,7 @@ func NewMockPlugin(name string) *MockPlugin {
 func (m *MockPlugin) Metadata() types.PluginMetadata {
 	m.mu.RLock()
 	defer m.mu.RUnlock()
-	
+
 	return m.PluginMetadata
 }
 
@@ -522,12 +522,12 @@ func (m *MockPlugin) Metadata() types.PluginMetadata {
 func (m *MockPlugin) Initialize(config types.PluginConfig) error {
 	m.mu.Lock()
 	defer m.mu.Unlock()
-	
+
 	m.InitializeCalls++
 	if m.InitializeError != nil {
 		return m.InitializeError
 	}
-	
+
 	m.Initialized = true
 	return nil
 }
@@ -536,14 +536,14 @@ func (m *MockPlugin) Initialize(config types.PluginConfig) error {
 func (m *MockPlugin) Validate(ctx types.PluginContext, resource types.Resource) error {
 	m.mu.Lock()
 	defer m.mu.Unlock()
-	
+
 	m.ValidateCalls++
 	m.LastValidateResource = &resource
-	
+
 	if m.ValidateError != nil {
 		return m.ValidateError
 	}
-	
+
 	return nil
 }
 
@@ -551,18 +551,18 @@ func (m *MockPlugin) Validate(ctx types.PluginContext, resource types.Resource) 
 func (m *MockPlugin) PreExecute(ctx types.PluginContext, resource types.Resource) (types.Snapshot, error) {
 	m.mu.Lock()
 	defer m.mu.Unlock()
-	
+
 	m.PreExecuteCalls++
 	m.LastPreExecuteResource = &resource
-	
+
 	if m.PreExecuteError != nil {
 		return nil, m.PreExecuteError
 	}
-	
+
 	if m.SnapshotToReturn != nil {
 		return m.SnapshotToReturn, nil
 	}
-	
+
 	return NewMockSnapshot(resource), nil
 }
 
@@ -570,14 +570,14 @@ func (m *MockPlugin) PreExecute(ctx types.PluginContext, resource types.Resource
 func (m *MockPlugin) Execute(ctx types.PluginContext, resource types.Resource) error {
 	m.mu.Lock()
 	defer m.mu.Unlock()
-	
+
 	m.ExecuteCalls++
 	m.LastExecuteResource = &resource
-	
+
 	if m.ExecuteError != nil {
 		return m.ExecuteError
 	}
-	
+
 	return nil
 }
 
@@ -585,14 +585,14 @@ func (m *MockPlugin) Execute(ctx types.PluginContext, resource types.Resource) e
 func (m *MockPlugin) PostExecute(ctx types.PluginContext, resource types.Resource, result types.ExecutionResult) error {
 	m.mu.Lock()
 	defer m.mu.Unlock()
-	
+
 	m.PostExecuteCalls++
 	m.LastPostExecuteResource = &resource
-	
+
 	if m.PostExecuteError != nil {
 		return m.PostExecuteError
 	}
-	
+
 	return nil
 }
 
@@ -600,14 +600,14 @@ func (m *MockPlugin) PostExecute(ctx types.PluginContext, resource types.Resourc
 func (m *MockPlugin) Cleanup(ctx types.PluginContext, resource types.Resource) error {
 	m.mu.Lock()
 	defer m.mu.Unlock()
-	
+
 	m.CleanupCalls++
 	m.LastCleanupResource = &resource
-	
+
 	if m.CleanupError != nil {
 		return m.CleanupError
 	}
-	
+
 	return nil
 }
 
@@ -615,15 +615,15 @@ func (m *MockPlugin) Cleanup(ctx types.PluginContext, resource types.Resource) e
 func (m *MockPlugin) Rollback(ctx types.PluginContext, resource types.Resource, snapshot types.Snapshot) error {
 	m.mu.Lock()
 	defer m.mu.Unlock()
-	
+
 	m.RollbackCalls++
 	m.LastRollbackResource = &resource
 	m.LastRollbackSnapshot = snapshot
-	
+
 	if m.RollbackError != nil {
 		return m.RollbackError
 	}
-	
+
 	return nil
 }
 
@@ -671,23 +671,23 @@ func (m *MockSnapshot) Deserialize(data []byte) error {
 // MockMonitor is a mock implementation of Monitor for testing
 type MockMonitor struct {
 	mu sync.RWMutex
-	
+
 	// State
 	HealthCheckStrategies map[string]types.HealthCheckStrategy
-	
+
 	// Behavior configuration
-	CheckHealthError       error
-	WaitForConditionError  error
-	WaitForHealthyError    error
-	CollectMetricsError    error
-	WatchEventsError       error
-	RegisterStrategyError  error
-	GetStrategyError       error
-	
+	CheckHealthError      error
+	WaitForConditionError error
+	WaitForHealthyError   error
+	CollectMetricsError   error
+	WatchEventsError      error
+	RegisterStrategyError error
+	GetStrategyError      error
+
 	// Return values
 	HealthStatusToReturn types.HealthStatus
 	MetricsToReturn      types.Metrics
-	
+
 	// Call tracking
 	CheckHealthCalls      int
 	WaitForConditionCalls int
@@ -713,12 +713,12 @@ func NewMockMonitor() *MockMonitor {
 func (m *MockMonitor) CheckHealth(ctx context.Context, resource types.Resource) (types.HealthStatus, error) {
 	m.mu.Lock()
 	defer m.mu.Unlock()
-	
+
 	m.CheckHealthCalls++
 	if m.CheckHealthError != nil {
 		return types.HealthStatus{}, m.CheckHealthError
 	}
-	
+
 	return m.HealthStatusToReturn, nil
 }
 
@@ -726,12 +726,12 @@ func (m *MockMonitor) CheckHealth(ctx context.Context, resource types.Resource) 
 func (m *MockMonitor) WaitForCondition(ctx context.Context, resource types.Resource, condition types.Condition, timeout time.Duration) error {
 	m.mu.Lock()
 	defer m.mu.Unlock()
-	
+
 	m.WaitForConditionCalls++
 	if m.WaitForConditionError != nil {
 		return m.WaitForConditionError
 	}
-	
+
 	return nil
 }
 
@@ -739,12 +739,12 @@ func (m *MockMonitor) WaitForCondition(ctx context.Context, resource types.Resou
 func (m *MockMonitor) WaitForHealthy(ctx context.Context, resource types.Resource, timeout time.Duration) error {
 	m.mu.Lock()
 	defer m.mu.Unlock()
-	
+
 	m.WaitForHealthyCalls++
 	if m.WaitForHealthyError != nil {
 		return m.WaitForHealthyError
 	}
-	
+
 	return nil
 }
 
@@ -752,16 +752,16 @@ func (m *MockMonitor) WaitForHealthy(ctx context.Context, resource types.Resourc
 func (m *MockMonitor) CollectMetrics(ctx context.Context, resource types.Resource) (types.Metrics, error) {
 	m.mu.Lock()
 	defer m.mu.Unlock()
-	
+
 	m.CollectMetricsCalls++
 	if m.CollectMetricsError != nil {
 		return types.Metrics{}, m.CollectMetricsError
 	}
-	
+
 	if m.MetricsToReturn.ResourceID != "" {
 		return m.MetricsToReturn, nil
 	}
-	
+
 	return types.Metrics{
 		Timestamp:  time.Now(),
 		ResourceID: resource.ID,
@@ -775,18 +775,18 @@ func (m *MockMonitor) CollectMetrics(ctx context.Context, resource types.Resourc
 func (m *MockMonitor) WatchEvents(ctx context.Context, resource types.Resource) (<-chan types.Event, error) {
 	m.mu.Lock()
 	defer m.mu.Unlock()
-	
+
 	m.WatchEventsCalls++
 	if m.WatchEventsError != nil {
 		return nil, m.WatchEventsError
 	}
-	
+
 	ch := make(chan types.Event, 10)
 	go func() {
 		<-ctx.Done()
 		close(ch)
 	}()
-	
+
 	return ch, nil
 }
 
@@ -794,12 +794,12 @@ func (m *MockMonitor) WatchEvents(ctx context.Context, resource types.Resource) 
 func (m *MockMonitor) RegisterHealthCheckStrategy(name string, strategy types.HealthCheckStrategy) error {
 	m.mu.Lock()
 	defer m.mu.Unlock()
-	
+
 	m.RegisterStrategyCalls++
 	if m.RegisterStrategyError != nil {
 		return m.RegisterStrategyError
 	}
-	
+
 	m.HealthCheckStrategies[name] = strategy
 	return nil
 }
@@ -808,17 +808,17 @@ func (m *MockMonitor) RegisterHealthCheckStrategy(name string, strategy types.He
 func (m *MockMonitor) GetHealthCheckStrategy(name string) (types.HealthCheckStrategy, error) {
 	m.mu.RLock()
 	defer m.mu.RUnlock()
-	
+
 	m.GetStrategyCalls++
 	if m.GetStrategyError != nil {
 		return nil, m.GetStrategyError
 	}
-	
+
 	strategy, exists := m.HealthCheckStrategies[name]
 	if !exists {
 		return nil, fmt.Errorf("strategy not found: %s", name)
 	}
-	
+
 	return strategy, nil
 }
 
@@ -829,34 +829,34 @@ func (m *MockMonitor) GetHealthCheckStrategy(name string) (types.HealthCheckStra
 // MockReporter is a mock implementation of Reporter for testing
 type MockReporter struct {
 	mu sync.RWMutex
-	
+
 	// State
-	Events           []types.Event
-	Executions       []types.ExecutionRecord
-	Storage          types.StorageBackend
-	Formatters       map[string]types.ReportFormatter
-	
+	Events     []types.Event
+	Executions []types.ExecutionRecord
+	Storage    types.StorageBackend
+	Formatters map[string]types.ReportFormatter
+
 	// Behavior configuration
-	RecordEventError      error
-	RecordExecutionError  error
-	QueryEventsError      error
-	QueryExecutionsError  error
+	RecordEventError       error
+	RecordExecutionError   error
+	QueryEventsError       error
+	QueryExecutionsError   error
 	ComputeStatisticsError error
-	GenerateReportError   error
-	SetStorageError       error
+	GenerateReportError    error
+	SetStorageError        error
 	RegisterFormatterError error
-	
+
 	// Return values
 	StatisticsToReturn types.Statistics
-	
+
 	// Call tracking
-	RecordEventCalls      int
-	RecordExecutionCalls  int
-	QueryEventsCalls      int
-	QueryExecutionsCalls  int
+	RecordEventCalls       int
+	RecordExecutionCalls   int
+	QueryEventsCalls       int
+	QueryExecutionsCalls   int
 	ComputeStatisticsCalls int
-	GenerateReportCalls   int
-	SetStorageCalls       int
+	GenerateReportCalls    int
+	SetStorageCalls        int
 	RegisterFormatterCalls int
 }
 
@@ -873,12 +873,12 @@ func NewMockReporter() *MockReporter {
 func (m *MockReporter) RecordEvent(ctx context.Context, event types.Event) error {
 	m.mu.Lock()
 	defer m.mu.Unlock()
-	
+
 	m.RecordEventCalls++
 	if m.RecordEventError != nil {
 		return m.RecordEventError
 	}
-	
+
 	m.Events = append(m.Events, event)
 	return nil
 }
@@ -887,12 +887,12 @@ func (m *MockReporter) RecordEvent(ctx context.Context, event types.Event) error
 func (m *MockReporter) RecordExecution(ctx context.Context, exec types.ExecutionRecord) error {
 	m.mu.Lock()
 	defer m.mu.Unlock()
-	
+
 	m.RecordExecutionCalls++
 	if m.RecordExecutionError != nil {
 		return m.RecordExecutionError
 	}
-	
+
 	m.Executions = append(m.Executions, exec)
 	return nil
 }
@@ -901,12 +901,12 @@ func (m *MockReporter) RecordExecution(ctx context.Context, exec types.Execution
 func (m *MockReporter) QueryEvents(ctx context.Context, query types.EventQuery) ([]types.Event, error) {
 	m.mu.RLock()
 	defer m.mu.RUnlock()
-	
+
 	m.QueryEventsCalls++
 	if m.QueryEventsError != nil {
 		return nil, m.QueryEventsError
 	}
-	
+
 	return m.Events, nil
 }
 
@@ -914,12 +914,12 @@ func (m *MockReporter) QueryEvents(ctx context.Context, query types.EventQuery) 
 func (m *MockReporter) QueryExecutions(ctx context.Context, query types.ExecutionQuery) ([]types.ExecutionRecord, error) {
 	m.mu.RLock()
 	defer m.mu.RUnlock()
-	
+
 	m.QueryExecutionsCalls++
 	if m.QueryExecutionsError != nil {
 		return nil, m.QueryExecutionsError
 	}
-	
+
 	return m.Executions, nil
 }
 
@@ -927,16 +927,16 @@ func (m *MockReporter) QueryExecutions(ctx context.Context, query types.Executio
 func (m *MockReporter) ComputeStatistics(ctx context.Context, filter types.StatisticsFilter) (types.Statistics, error) {
 	m.mu.Lock()
 	defer m.mu.Unlock()
-	
+
 	m.ComputeStatisticsCalls++
 	if m.ComputeStatisticsError != nil {
 		return types.Statistics{}, m.ComputeStatisticsError
 	}
-	
+
 	if m.StatisticsToReturn.TotalExecutions > 0 {
 		return m.StatisticsToReturn, nil
 	}
-	
+
 	return types.Statistics{
 		TotalExecutions: len(m.Executions),
 		SuccessCount:    len(m.Executions),
@@ -948,12 +948,12 @@ func (m *MockReporter) ComputeStatistics(ctx context.Context, filter types.Stati
 func (m *MockReporter) GenerateReport(ctx context.Context, format string, filter types.ReportFilter) ([]byte, error) {
 	m.mu.Lock()
 	defer m.mu.Unlock()
-	
+
 	m.GenerateReportCalls++
 	if m.GenerateReportError != nil {
 		return nil, m.GenerateReportError
 	}
-	
+
 	return []byte(fmt.Sprintf("Report in %s format", format)), nil
 }
 
@@ -961,12 +961,12 @@ func (m *MockReporter) GenerateReport(ctx context.Context, format string, filter
 func (m *MockReporter) SetStorage(storage types.StorageBackend) error {
 	m.mu.Lock()
 	defer m.mu.Unlock()
-	
+
 	m.SetStorageCalls++
 	if m.SetStorageError != nil {
 		return m.SetStorageError
 	}
-	
+
 	m.Storage = storage
 	return nil
 }
@@ -975,12 +975,12 @@ func (m *MockReporter) SetStorage(storage types.StorageBackend) error {
 func (m *MockReporter) RegisterFormatter(name string, formatter types.ReportFormatter) error {
 	m.mu.Lock()
 	defer m.mu.Unlock()
-	
+
 	m.RegisterFormatterCalls++
 	if m.RegisterFormatterError != nil {
 		return m.RegisterFormatterError
 	}
-	
+
 	m.Formatters[name] = formatter
 	return nil
 }
@@ -992,17 +992,17 @@ func (m *MockReporter) RegisterFormatter(name string, formatter types.ReportForm
 // MockEventBus is a mock implementation of EventBus for testing
 type MockEventBus struct {
 	mu sync.RWMutex
-	
+
 	// State
-	Subscriptions map[string]*MockSubscription
+	Subscriptions   map[string]*MockSubscription
 	PublishedEvents []types.Event
-	Closed        bool
-	
+	Closed          bool
+
 	// Behavior configuration
 	PublishError      error
 	PublishAsyncError error
 	SubscribeError    error
-	
+
 	// Call tracking
 	PublishCalls      int
 	PublishAsyncCalls int
@@ -1022,14 +1022,14 @@ func NewMockEventBus() *MockEventBus {
 func (m *MockEventBus) Publish(ctx context.Context, event types.Event) error {
 	m.mu.Lock()
 	defer m.mu.Unlock()
-	
+
 	m.PublishCalls++
 	if m.PublishError != nil {
 		return m.PublishError
 	}
-	
+
 	m.PublishedEvents = append(m.PublishedEvents, event)
-	
+
 	// Deliver to matching subscriptions
 	for _, sub := range m.Subscriptions {
 		if sub.matchesFilter(event) {
@@ -1040,7 +1040,7 @@ func (m *MockEventBus) Publish(ctx context.Context, event types.Event) error {
 			}
 		}
 	}
-	
+
 	return nil
 }
 
@@ -1048,17 +1048,17 @@ func (m *MockEventBus) Publish(ctx context.Context, event types.Event) error {
 func (m *MockEventBus) PublishAsync(ctx context.Context, event types.Event) error {
 	m.mu.Lock()
 	defer m.mu.Unlock()
-	
+
 	m.PublishAsyncCalls++
 	if m.PublishAsyncError != nil {
 		return m.PublishAsyncError
 	}
-	
+
 	go func() {
 		m.mu.Lock()
 		defer m.mu.Unlock()
 		m.PublishedEvents = append(m.PublishedEvents, event)
-		
+
 		for _, sub := range m.Subscriptions {
 			if sub.matchesFilter(event) {
 				select {
@@ -1068,7 +1068,7 @@ func (m *MockEventBus) PublishAsync(ctx context.Context, event types.Event) erro
 			}
 		}
 	}()
-	
+
 	return nil
 }
 
@@ -1076,19 +1076,19 @@ func (m *MockEventBus) PublishAsync(ctx context.Context, event types.Event) erro
 func (m *MockEventBus) Subscribe(ctx context.Context, filter types.EventFilter) (types.Subscription, error) {
 	m.mu.Lock()
 	defer m.mu.Unlock()
-	
+
 	m.SubscribeCalls++
 	if m.SubscribeError != nil {
 		return nil, m.SubscribeError
 	}
-	
+
 	sub := &MockSubscription{
 		id:        fmt.Sprintf("sub-%d", len(m.Subscriptions)+1),
 		filter:    filter,
 		eventChan: make(chan types.Event, 100),
 		bus:       m,
 	}
-	
+
 	m.Subscriptions[sub.id] = sub
 	return sub, nil
 }
@@ -1097,15 +1097,15 @@ func (m *MockEventBus) Subscribe(ctx context.Context, filter types.EventFilter) 
 func (m *MockEventBus) Close() error {
 	m.mu.Lock()
 	defer m.mu.Unlock()
-	
+
 	m.CloseCalls++
 	m.Closed = true
-	
+
 	for _, sub := range m.Subscriptions {
 		close(sub.eventChan)
 	}
 	m.Subscriptions = make(map[string]*MockSubscription)
-	
+
 	return nil
 }
 
@@ -1135,10 +1135,10 @@ func (m *MockSubscription) Events() <-chan types.Event {
 func (m *MockSubscription) Unsubscribe() error {
 	m.bus.mu.Lock()
 	defer m.bus.mu.Unlock()
-	
+
 	delete(m.bus.Subscriptions, m.id)
 	close(m.eventChan)
-	
+
 	return nil
 }
 
@@ -1156,7 +1156,7 @@ func (m *MockSubscription) matchesFilter(event types.Event) bool {
 			return false
 		}
 	}
-	
+
 	// Check sources
 	if len(m.filter.Sources) > 0 {
 		found := false
@@ -1170,13 +1170,13 @@ func (m *MockSubscription) matchesFilter(event types.Event) bool {
 			return false
 		}
 	}
-	
+
 	// Check metadata
 	for key, value := range m.filter.Metadata {
 		if event.Metadata[key] != value {
 			return false
 		}
 	}
-	
+
 	return true
 }
