@@ -143,13 +143,13 @@
   - **Property 57: Custom observability providers are supported**
   - **검증: 요구사항 11.1, 11.3, 11.5**
 
-- [ ] 12. PluginRegistry 인터페이스 정의
+- [x] 12. PluginRegistry 인터페이스 정의
   - PluginRegistry 인터페이스 정의
   - PluginLoader 인터페이스, PluginValidator 인터페이스 정의
   - PluginFilter 정의
   - _요구사항: 13.1, 13.2, 13.3, 13.4, 13.5_
 
-- [ ] 12.1 PluginRegistry 속성 기반 테스트 작성
+- [x] 12.1 PluginRegistry 속성 기반 테스트 작성
   - **Property 59: Plugins are discovered from directories**
   - **Property 60: Plugin validation occurs on registration**
   - **Property 63: Hot-reload updates plugins without restart**
