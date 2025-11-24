@@ -155,7 +155,7 @@
   - **Property 63: Hot-reload updates plugins without restart**
   - **검증: 요구사항 13.1, 13.2, 13.5**
 
-- [ ] 13. 테스트 유틸리티 패키지 작성
+- [x] 13. 테스트 유틸리티 패키지 작성
   - MockEnvironmentAdapter 구현
   - MockPlugin 구현
   - MockMonitor, MockReporter, MockEventBus 구현
@@ -164,7 +164,7 @@
   - WorkflowTestRunner 구현
   - _요구사항: 12.1, 12.2, 12.3, 12.4, 12.5_
 
-- [ ] 13.1 테스트 유틸리티 속성 기반 테스트 작성
+- [x] 13.1 테스트 유틸리티 속성 기반 테스트 작성
   - **Property 58: Mock implementations exist for all interfaces**
   - **검증: 요구사항 12.5**
 
