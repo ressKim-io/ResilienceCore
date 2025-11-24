@@ -4,8 +4,6 @@ package types
 import (
 	"errors"
 	"fmt"
-	"os"
-	"path/filepath"
 	"testing"
 
 	"github.com/leanovate/gopter"
@@ -306,7 +304,8 @@ func TestProperty63_HotReloadUpdatesPluginsWithoutRestart(t *testing.T) {
 			}
 
 			// Simulate reload by unregistering and re-registering with new version
-			if err := registry.Unregister(pluginName); err != nil {
+			err = registry.Unregister(pluginName)
+			if err != nil {
 				return false
 			}
 
@@ -319,7 +318,8 @@ func TestProperty63_HotReloadUpdatesPluginsWithoutRestart(t *testing.T) {
 				},
 			}
 
-			if err := registry.Register(plugin2); err != nil {
+			err = registry.Register(plugin2)
+			if err != nil {
 				return false
 			}
 
@@ -655,26 +655,4 @@ func (l *MockPluginLoader) AddPlugin(path string, plugin Plugin) {
 // Helper Functions for Testing
 // ============================================================================
 
-// createTempPluginDir creates a temporary directory with mock plugin files
-func createTempPluginDir(t *testing.T, pluginCount int) string {
-	dir, err := os.MkdirTemp("", "plugin-test-*")
-	if err != nil {
-		t.Fatalf("failed to create temp dir: %v", err)
-	}
-
-	for i := 0; i < pluginCount; i++ {
-		pluginPath := filepath.Join(dir, fmt.Sprintf("plugin-%d.so", i))
-		file, err := os.Create(pluginPath)
-		if err != nil {
-			t.Fatalf("failed to create plugin file: %v", err)
-		}
-		file.Close()
-	}
-
-	return dir
-}
-
-// cleanupTempDir removes a temporary directory
-func cleanupTempDir(dir string) {
-	os.RemoveAll(dir)
-}
+// Note: Helper functions for plugin directory testing will be added when needed
