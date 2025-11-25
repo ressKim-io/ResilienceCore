@@ -1,0 +1,599 @@
+?   	github.com/yourusername/infrastructure-resilience-engine/cmd/grimops	[no test files]
+?   	github.com/yourusername/infrastructure-resilience-engine/cmd/necroops	[no test files]
+=== RUN   TestProperty43_MultipleConfigProvidersAreSupported
++ multiple config providers are supported: OK, passed 100 tests.
+--- PASS: TestProperty43_MultipleConfigProvidersAreSupported (0.03s)
+=== RUN   TestProperty44_ConfigMergeFollowsPrecedence
++ config merge follows precedence: OK, passed 100 tests.
+--- PASS: TestProperty44_ConfigMergeFollowsPrecedence (0.00s)
+=== RUN   TestProperty45_ConfigValuesAreTypeConverted
++ config values are type-converted: OK, passed 100 tests.
+--- PASS: TestProperty45_ConfigValuesAreTypeConverted (0.00s)
+=== RUN   TestProperty46_ConfigChangesNotifyWatchers
++ config changes notify watchers: OK, passed 100 tests.
+--- PASS: TestProperty46_ConfigChangesNotifyWatchers (5.11s)
+=== RUN   TestProperty47_CustomConfigProvidersAreSupported
++ custom config providers are supported: OK, passed 100 tests.
+--- PASS: TestProperty47_CustomConfigProvidersAreSupported (0.06s)
+=== RUN   TestDefaultConfig_GetSet
+--- PASS: TestDefaultConfig_GetSet (0.00s)
+=== RUN   TestDefaultConfig_GetString
+=== RUN   TestDefaultConfig_GetString/string_value
+=== RUN   TestDefaultConfig_GetString/int_value
+=== RUN   TestDefaultConfig_GetString/bool_value
+--- PASS: TestDefaultConfig_GetString (0.00s)
+    --- PASS: TestDefaultConfig_GetString/string_value (0.00s)
+    --- PASS: TestDefaultConfig_GetString/int_value (0.00s)
+    --- PASS: TestDefaultConfig_GetString/bool_value (0.00s)
+=== RUN   TestDefaultConfig_GetInt
+=== RUN   TestDefaultConfig_GetInt/int_value
+=== RUN   TestDefaultConfig_GetInt/int64_value
+=== RUN   TestDefaultConfig_GetInt/float64_value
+=== RUN   TestDefaultConfig_GetInt/string_value
+=== RUN   TestDefaultConfig_GetInt/invalid_string
+--- PASS: TestDefaultConfig_GetInt (0.00s)
+    --- PASS: TestDefaultConfig_GetInt/int_value (0.00s)
+    --- PASS: TestDefaultConfig_GetInt/int64_value (0.00s)
+    --- PASS: TestDefaultConfig_GetInt/float64_value (0.00s)
+    --- PASS: TestDefaultConfig_GetInt/string_value (0.00s)
+    --- PASS: TestDefaultConfig_GetInt/invalid_string (0.00s)
+=== RUN   TestDefaultConfig_GetBool
+=== RUN   TestDefaultConfig_GetBool/bool_true
+=== RUN   TestDefaultConfig_GetBool/bool_false
+=== RUN   TestDefaultConfig_GetBool/string_true
+=== RUN   TestDefaultConfig_GetBool/string_false
+=== RUN   TestDefaultConfig_GetBool/int_1
+=== RUN   TestDefaultConfig_GetBool/int_0
+=== RUN   TestDefaultConfig_GetBool/invalid_string
+--- PASS: TestDefaultConfig_GetBool (0.00s)
+    --- PASS: TestDefaultConfig_GetBool/bool_true (0.00s)
+    --- PASS: TestDefaultConfig_GetBool/bool_false (0.00s)
+    --- PASS: TestDefaultConfig_GetBool/string_true (0.00s)
+    --- PASS: TestDefaultConfig_GetBool/string_false (0.00s)
+    --- PASS: TestDefaultConfig_GetBool/int_1 (0.00s)
+    --- PASS: TestDefaultConfig_GetBool/int_0 (0.00s)
+    --- PASS: TestDefaultConfig_GetBool/invalid_string (0.00s)
+=== RUN   TestDefaultConfig_GetDuration
+=== RUN   TestDefaultConfig_GetDuration/duration_value
+=== RUN   TestDefaultConfig_GetDuration/string_value
+=== RUN   TestDefaultConfig_GetDuration/int64_value
+=== RUN   TestDefaultConfig_GetDuration/invalid_string
+--- PASS: TestDefaultConfig_GetDuration (0.00s)
+    --- PASS: TestDefaultConfig_GetDuration/duration_value (0.00s)
+    --- PASS: TestDefaultConfig_GetDuration/string_value (0.00s)
+    --- PASS: TestDefaultConfig_GetDuration/int64_value (0.00s)
+    --- PASS: TestDefaultConfig_GetDuration/invalid_string (0.00s)
+=== RUN   TestDefaultConfig_Watch
+--- PASS: TestDefaultConfig_Watch (0.05s)
+=== RUN   TestDefaultConfig_AddProvider
+--- PASS: TestDefaultConfig_AddProvider (0.00s)
+=== RUN   TestDefaultConfig_ProviderPrecedence
+--- PASS: TestDefaultConfig_ProviderPrecedence (0.00s)
+=== RUN   TestYAMLProvider_Load
+--- PASS: TestYAMLProvider_Load (0.00s)
+=== RUN   TestYAMLProvider_Watch
+    config_test.go:354: File watching not working in test environment (this is acceptable)
+--- SKIP: TestYAMLProvider_Watch (3.61s)
+=== RUN   TestEnvProvider_Load
+--- PASS: TestEnvProvider_Load (0.00s)
+PASS
+ok  	github.com/yourusername/infrastructure-resilience-engine/pkg/core/config	9.710s
+=== RUN   TestProperty12_PluginLifecycleHooksExecuteInOrder
++ lifecycle hooks execute in correct order: OK, passed 100 tests.
+--- PASS: TestProperty12_PluginLifecycleHooksExecuteInOrder (0.00s)
+=== RUN   TestProperty13_RollbackIsInvokedOnFailure
++ rollback is called when execution fails: OK, passed 100 tests.
++ rollback receives snapshot from PreExecute: OK, passed 100 tests.
+--- PASS: TestProperty13_RollbackIsInvokedOnFailure (0.00s)
+=== RUN   TestProperty23_ConcurrencyLimitsAreRespected
++ concurrency limit can be set: OK, passed 100 tests.
++ multiple executions complete successfully: OK, passed 100 tests.
+--- PASS: TestProperty23_ConcurrencyLimitsAreRespected (0.00s)
+=== RUN   TestProperty24_TimeoutCancelsExecution
++ timeout results in timeout status: OK, passed 100 tests.
++ cleanup is called even on timeout: OK, passed 100 tests.
+--- PASS: TestProperty24_TimeoutCancelsExecution (0.00s)
+=== RUN   TestProperty64_RetryableErrorsTriggerRetryWithBackoff
++ retry strategy retries on failure: OK, passed 100 tests.
++ backoff delay increases exponentially: OK, passed 100 tests.
+--- PASS: TestProperty64_RetryableErrorsTriggerRetryWithBackoff (0.15s)
+=== RUN   TestProperty73_ResourceLockingPreventsConcurrentExecution
++ resource locks are created for each resource: OK, passed 100 tests.
++ different resources get different locks: OK, passed 100 tests.
++ multiple executions on same resource complete: OK, passed 100 tests.
+--- PASS: TestProperty73_ResourceLockingPreventsConcurrentExecution (0.00s)
+=== RUN   TestProperty25_WorkflowRespectsDependencies
++ steps execute after dependencies: OK, passed 100 tests.
++ circular dependencies are detected: OK, passed 100 tests.
+--- PASS: TestProperty25_WorkflowRespectsDependencies (0.00s)
+=== RUN   TestProperty74_WorkflowSupportsSequentialAndParallelExecution
++ sequential steps execute one at a time: OK, passed 100 tests.
++ parallel steps can execute concurrently: OK, passed 100 tests.
+--- PASS: TestProperty74_WorkflowSupportsSequentialAndParallelExecution (0.00s)
+=== RUN   TestProperty75_DependenciesAreWaitedFor
++ step waits for all dependencies: OK, passed 100 tests.
++ missing dependency causes error: OK, passed 100 tests.
+--- PASS: TestProperty75_DependenciesAreWaitedFor (0.00s)
+=== RUN   TestProperty76_StepErrorHandlerIsExecuted
++ error handler abort stops workflow: OK, passed 100 tests.
++ error handler continue allows workflow to proceed: OK, passed 100 tests.
+--- PASS: TestProperty76_StepErrorHandlerIsExecuted (0.00s)
+=== RUN   TestProperty78_ConditionalExecutionWorksCorrectly
++ always condition executes step: OK, passed 100 tests.
++ on_success condition executes when dependencies succeed: OK, passed 100
+   tests.
++ on_success condition skips when dependencies fail: OK, passed 100 tests.
++ on_failure condition executes when dependencies fail: OK, passed 100
+   tests.
+--- PASS: TestProperty78_ConditionalExecutionWorksCorrectly (0.01s)
+=== RUN   TestDefaultExecutionEngine_RegisterPlugin
+=== RUN   TestDefaultExecutionEngine_RegisterPlugin/valid_plugin
+=== RUN   TestDefaultExecutionEngine_RegisterPlugin/nil_plugin
+--- PASS: TestDefaultExecutionEngine_RegisterPlugin (0.00s)
+    --- PASS: TestDefaultExecutionEngine_RegisterPlugin/valid_plugin (0.00s)
+    --- PASS: TestDefaultExecutionEngine_RegisterPlugin/nil_plugin (0.00s)
+=== RUN   TestDefaultExecutionEngine_RegisterPlugin_Duplicate
+--- PASS: TestDefaultExecutionEngine_RegisterPlugin_Duplicate (0.00s)
+=== RUN   TestDefaultExecutionEngine_UnregisterPlugin
+--- PASS: TestDefaultExecutionEngine_UnregisterPlugin (0.00s)
+=== RUN   TestDefaultExecutionEngine_UnregisterPlugin_NotFound
+--- PASS: TestDefaultExecutionEngine_UnregisterPlugin_NotFound (0.00s)
+=== RUN   TestDefaultExecutionEngine_ListPlugins
+=== RUN   TestDefaultExecutionEngine_ListPlugins/no_filter
+=== RUN   TestDefaultExecutionEngine_ListPlugins/filter_by_name
+=== RUN   TestDefaultExecutionEngine_ListPlugins/filter_by_version
+=== RUN   TestDefaultExecutionEngine_ListPlugins/filter_by_supported_kind
+--- PASS: TestDefaultExecutionEngine_ListPlugins (0.00s)
+    --- PASS: TestDefaultExecutionEngine_ListPlugins/no_filter (0.00s)
+    --- PASS: TestDefaultExecutionEngine_ListPlugins/filter_by_name (0.00s)
+    --- PASS: TestDefaultExecutionEngine_ListPlugins/filter_by_version (0.00s)
+    --- PASS: TestDefaultExecutionEngine_ListPlugins/filter_by_supported_kind (0.00s)
+=== RUN   TestDefaultExecutionEngine_Execute_LifecycleOrder
+--- PASS: TestDefaultExecutionEngine_Execute_LifecycleOrder (0.00s)
+=== RUN   TestDefaultExecutionEngine_Execute_ValidationFailure
+--- PASS: TestDefaultExecutionEngine_Execute_ValidationFailure (0.00s)
+=== RUN   TestDefaultExecutionEngine_Execute_Rollback
+--- PASS: TestDefaultExecutionEngine_Execute_Rollback (0.00s)
+=== RUN   TestDefaultExecutionEngine_Execute_Timeout
+--- PASS: TestDefaultExecutionEngine_Execute_Timeout (0.00s)
+=== RUN   TestDefaultExecutionEngine_ExecuteAsync
+--- PASS: TestDefaultExecutionEngine_ExecuteAsync (0.00s)
+=== RUN   TestDefaultExecutionEngine_ExecuteAsync_Cancel
+--- PASS: TestDefaultExecutionEngine_ExecuteAsync_Cancel (0.00s)
+=== RUN   TestDefaultExecutionEngine_SetConcurrencyLimit
+--- PASS: TestDefaultExecutionEngine_SetConcurrencyLimit (0.00s)
+=== RUN   TestDefaultExecutionEngine_SetDefaultTimeout
+--- PASS: TestDefaultExecutionEngine_SetDefaultTimeout (0.00s)
+=== RUN   TestDefaultExecutionEngine_ConcurrencyLimit
+--- PASS: TestDefaultExecutionEngine_ConcurrencyLimit (0.00s)
+=== RUN   TestDefaultExecutionEngine_ResourceLocking
+--- PASS: TestDefaultExecutionEngine_ResourceLocking (0.00s)
+=== RUN   TestDefaultExecutionEngine_WithComponents
+--- PASS: TestDefaultExecutionEngine_WithComponents (0.00s)
+=== RUN   TestWorkflowAbortStopsExecution
+    workflow_test.go:53: Workflow status: failed
+    workflow_test.go:54: Step results: map[step1:{Status:failed StartTime:2025-11-25 20:50:46.944166 +0900 KST m=+0.181774793 EndTime:2025-11-25 20:50:46.944168 +0900 KST m=+0.181776001 Duration:1.208µs Error:step failed Metadata:map[]}]
+    workflow_test.go:55: Plugin1 execute calls: 1
+    workflow_test.go:56: Plugin2 execute calls: 0
+--- PASS: TestWorkflowAbortStopsExecution (0.00s)
+PASS
+ok  	github.com/yourusername/infrastructure-resilience-engine/pkg/core/engine	0.655s
+=== RUN   TestProperty38_EventsAreDeliveredToAllMatchingSubscribers
++ events are delivered to all matching subscribers: OK, passed 100 tests.
+--- PASS: TestProperty38_EventsAreDeliveredToAllMatchingSubscribers (0.56s)
+=== RUN   TestProperty39_SubscriptionReceivesOnlyMatchingEvents
++ subscription receives only matching events: OK, passed 100 tests.
+--- PASS: TestProperty39_SubscriptionReceivesOnlyMatchingEvents (2.12s)
+=== RUN   TestProperty40_UnsubscribeStopsEventDelivery
++ unsubscribe stops event delivery: OK, passed 100 tests.
+--- PASS: TestProperty40_UnsubscribeStopsEventDelivery (0.57s)
+=== RUN   TestProperty41_ShutdownClosesAllChannelsGracefully
++ shutdown closes all channels gracefully: OK, passed 100 tests.
+--- PASS: TestProperty41_ShutdownClosesAllChannelsGracefully (0.01s)
+=== RUN   TestProperty42_EventFilteringSupportsTypeSourceAndMetadata
++ event filtering supports type, source, and metadata: OK, passed 100
+   tests.
+--- PASS: TestProperty42_EventFilteringSupportsTypeSourceAndMetadata (2.12s)
+=== RUN   TestInMemoryEventBus_PublishAndSubscribe
+--- PASS: TestInMemoryEventBus_PublishAndSubscribe (0.00s)
+=== RUN   TestInMemoryEventBus_PublishAsync
+--- PASS: TestInMemoryEventBus_PublishAsync (0.00s)
+=== RUN   TestInMemoryEventBus_FilterByType
+--- PASS: TestInMemoryEventBus_FilterByType (0.10s)
+=== RUN   TestInMemoryEventBus_FilterBySource
+--- PASS: TestInMemoryEventBus_FilterBySource (0.10s)
+=== RUN   TestInMemoryEventBus_FilterByMetadata
+--- PASS: TestInMemoryEventBus_FilterByMetadata (0.10s)
+=== RUN   TestInMemoryEventBus_MultipleSubscribers
+--- PASS: TestInMemoryEventBus_MultipleSubscribers (0.00s)
+=== RUN   TestInMemoryEventBus_Unsubscribe
+--- PASS: TestInMemoryEventBus_Unsubscribe (0.00s)
+=== RUN   TestInMemoryEventBus_Close
+--- PASS: TestInMemoryEventBus_Close (0.00s)
+=== RUN   TestInMemoryEventBus_CombinedFilters
+--- PASS: TestInMemoryEventBus_CombinedFilters (0.11s)
+PASS
+ok  	github.com/yourusername/infrastructure-resilience-engine/pkg/core/eventbus	(cached)
+=== RUN   TestDefaultMonitor_CheckHealth
+=== RUN   TestDefaultMonitor_CheckHealth/HTTP_health_check_with_unreachable_endpoint
+=== RUN   TestDefaultMonitor_CheckHealth/no_health_check_configuration
+=== RUN   TestDefaultMonitor_CheckHealth/health_check_type_not_specified
+=== RUN   TestDefaultMonitor_CheckHealth/strategy_not_found
+--- PASS: TestDefaultMonitor_CheckHealth (0.00s)
+    --- PASS: TestDefaultMonitor_CheckHealth/HTTP_health_check_with_unreachable_endpoint (0.00s)
+    --- PASS: TestDefaultMonitor_CheckHealth/no_health_check_configuration (0.00s)
+    --- PASS: TestDefaultMonitor_CheckHealth/health_check_type_not_specified (0.00s)
+    --- PASS: TestDefaultMonitor_CheckHealth/strategy_not_found (0.00s)
+=== RUN   TestDefaultMonitor_WaitForCondition
+=== RUN   TestDefaultMonitor_WaitForCondition/condition_met_immediately
+=== RUN   TestDefaultMonitor_WaitForCondition/timeout_waiting_for_condition
+--- PASS: TestDefaultMonitor_WaitForCondition (0.11s)
+    --- PASS: TestDefaultMonitor_WaitForCondition/condition_met_immediately (0.01s)
+    --- PASS: TestDefaultMonitor_WaitForCondition/timeout_waiting_for_condition (0.10s)
+=== RUN   TestDefaultMonitor_WaitForHealthy
+=== RUN   TestDefaultMonitor_WaitForHealthy/timeout_waiting_for_healthy
+--- PASS: TestDefaultMonitor_WaitForHealthy (0.10s)
+    --- PASS: TestDefaultMonitor_WaitForHealthy/timeout_waiting_for_healthy (0.10s)
+=== RUN   TestDefaultMonitor_CollectMetrics
+=== RUN   TestDefaultMonitor_CollectMetrics/successful_metrics_collection
+=== RUN   TestDefaultMonitor_CollectMetrics/resource_not_found
+--- PASS: TestDefaultMonitor_CollectMetrics (0.00s)
+    --- PASS: TestDefaultMonitor_CollectMetrics/successful_metrics_collection (0.00s)
+    --- PASS: TestDefaultMonitor_CollectMetrics/resource_not_found (0.00s)
+=== RUN   TestDefaultMonitor_RegisterHealthCheckStrategy
+=== RUN   TestDefaultMonitor_RegisterHealthCheckStrategy/successful_registration
+=== RUN   TestDefaultMonitor_RegisterHealthCheckStrategy/empty_strategy_name
+=== RUN   TestDefaultMonitor_RegisterHealthCheckStrategy/nil_strategy
+--- PASS: TestDefaultMonitor_RegisterHealthCheckStrategy (0.00s)
+    --- PASS: TestDefaultMonitor_RegisterHealthCheckStrategy/successful_registration (0.00s)
+    --- PASS: TestDefaultMonitor_RegisterHealthCheckStrategy/empty_strategy_name (0.00s)
+    --- PASS: TestDefaultMonitor_RegisterHealthCheckStrategy/nil_strategy (0.00s)
+=== RUN   TestDefaultMonitor_GetHealthCheckStrategy
+=== RUN   TestDefaultMonitor_GetHealthCheckStrategy/get_existing_strategy
+=== RUN   TestDefaultMonitor_GetHealthCheckStrategy/strategy_not_found
+--- PASS: TestDefaultMonitor_GetHealthCheckStrategy (0.00s)
+    --- PASS: TestDefaultMonitor_GetHealthCheckStrategy/get_existing_strategy (0.00s)
+    --- PASS: TestDefaultMonitor_GetHealthCheckStrategy/strategy_not_found (0.00s)
+PASS
+ok  	github.com/yourusername/infrastructure-resilience-engine/pkg/core/monitor	1.414s
+=== RUN   TestStdoutLogger_LogsContainStructuredFields
+--- PASS: TestStdoutLogger_LogsContainStructuredFields (0.00s)
+=== RUN   TestStdoutLogger_AllLevels
+=== RUN   TestStdoutLogger_AllLevels/Debug
+=== RUN   TestStdoutLogger_AllLevels/Info
+=== RUN   TestStdoutLogger_AllLevels/Warn
+=== RUN   TestStdoutLogger_AllLevels/Error
+--- PASS: TestStdoutLogger_AllLevels (0.00s)
+    --- PASS: TestStdoutLogger_AllLevels/Debug (0.00s)
+    --- PASS: TestStdoutLogger_AllLevels/Info (0.00s)
+    --- PASS: TestStdoutLogger_AllLevels/Warn (0.00s)
+    --- PASS: TestStdoutLogger_AllLevels/Error (0.00s)
+=== RUN   TestStdoutLogger_With
+--- PASS: TestStdoutLogger_With (0.00s)
+=== RUN   TestStdoutLogger_WithDoesNotMutateParent
+--- PASS: TestStdoutLogger_WithDoesNotMutateParent (0.00s)
+=== RUN   TestStdoutLogger_JSONFormat
+--- PASS: TestStdoutLogger_JSONFormat (0.00s)
+=== RUN   TestNoOpMetricsCollector_Counter
+--- PASS: TestNoOpMetricsCollector_Counter (0.00s)
+=== RUN   TestNoOpMetricsCollector_Gauge
+--- PASS: TestNoOpMetricsCollector_Gauge (0.00s)
+=== RUN   TestNoOpMetricsCollector_Histogram
+--- PASS: TestNoOpMetricsCollector_Histogram (0.00s)
+=== RUN   TestNoOpTracer_StartSpan
+--- PASS: TestNoOpTracer_StartSpan (0.00s)
+=== RUN   TestNoOpSpan_Operations
+--- PASS: TestNoOpSpan_Operations (0.00s)
+=== RUN   TestNoOpSpan_WithOptions
+--- PASS: TestNoOpSpan_WithOptions (0.00s)
+=== RUN   TestDefaultObservabilityProvider_Components
+--- PASS: TestDefaultObservabilityProvider_Components (0.00s)
+=== RUN   TestDefaultObservabilityProvider_LoggerWorks
+{"level":"INFO","message":"test message","timestamp":"2025-11-25T11:47:07.882842Z"}
+--- PASS: TestDefaultObservabilityProvider_LoggerWorks (0.00s)
+=== RUN   TestDefaultObservabilityProvider_MetricsWork
+--- PASS: TestDefaultObservabilityProvider_MetricsWork (0.00s)
+=== RUN   TestDefaultObservabilityProvider_TracerWorks
+--- PASS: TestDefaultObservabilityProvider_TracerWorks (0.00s)
+=== RUN   TestNewObservabilityProvider_CustomComponents
+--- PASS: TestNewObservabilityProvider_CustomComponents (0.00s)
+=== RUN   TestObservability_Integration
+--- PASS: TestObservability_Integration (0.00s)
+PASS
+ok  	github.com/yourusername/infrastructure-resilience-engine/pkg/core/observability	(cached)
+=== RUN   TestProperty60_PluginValidationOccursOnRegistration
++ registration validates plugin metadata: OK, passed 100 tests.
++ registration rejects duplicate plugin names: OK, passed 100 tests.
++ validation checks interface compliance: OK, passed 100 tests.
+--- PASS: TestProperty60_PluginValidationOccursOnRegistration (0.01s)
+=== RUN   TestProperty61_PluginRetrievalReturnsPluginOrError
++ get returns registered plugin: OK, passed 100 tests.
++ get returns error for non-existent plugin: OK, passed 100 tests.
++ get after unregister returns error: OK, passed 100 tests.
+--- PASS: TestProperty61_PluginRetrievalReturnsPluginOrError (0.00s)
+=== RUN   TestProperty62_PluginListingSupportsFiltering
++ list with name filter returns matching plugins: OK, passed 100 tests.
++ list with version filter returns matching plugins: OK, passed 100 tests.
++ list with no matches returns empty list: OK, passed 100 tests.
+--- PASS: TestProperty62_PluginListingSupportsFiltering (0.01s)
+=== RUN   TestProperty84_DependenciesAreDeclaredInMetadata
++ plugin with dependencies has them in metadata: OK, passed 100 tests.
++ plugin without dependencies has empty list: OK, passed 100 tests.
+--- PASS: TestProperty84_DependenciesAreDeclaredInMetadata (0.00s)
+=== RUN   TestProperty85_DependenciesAreVerifiedOnLoad
++ registration succeeds when dependencies are satisfied: OK, passed 100
+   tests.
++ validate dependencies checks all dependencies: OK, passed 100 tests.
+--- PASS: TestProperty85_DependenciesAreVerifiedOnLoad (0.01s)
+=== RUN   TestProperty86_MissingDependenciesPreventRegistration
++ registration fails when dependency is missing: OK, passed 100 tests.
++ plugin is not in registry after failed registration: OK, passed 100
+   tests.
+--- PASS: TestProperty86_MissingDependenciesPreventRegistration (0.00s)
+=== RUN   TestProperty87_CircularDependenciesAreDetected
++ direct circular dependency is detected: OK, passed 100 tests.
++ indirect circular dependency is detected: OK, passed 100 tests.
+--- PASS: TestProperty87_CircularDependenciesAreDetected (0.00s)
+=== RUN   TestProperty88_VersionConstraintsAreValidated
++ satisfied version constraint allows registration: OK, passed 100 tests.
++ unsatisfied version constraint prevents registration: OK, passed 100
+   tests.
++ exact version match is validated: OK, passed 100 tests.
+--- PASS: TestProperty88_VersionConstraintsAreValidated (0.01s)
+=== RUN   TestRegister
+=== RUN   TestRegister/valid_plugin
+=== RUN   TestRegister/nil_plugin
+=== RUN   TestRegister/plugin_with_empty_name
+=== RUN   TestRegister/plugin_with_empty_version
+=== RUN   TestRegister/plugin_with_empty_description
+=== RUN   TestRegister/plugin_with_invalid_version
+=== RUN   TestRegister/plugin_with_invalid_name_characters
+--- PASS: TestRegister (0.00s)
+    --- PASS: TestRegister/valid_plugin (0.00s)
+    --- PASS: TestRegister/nil_plugin (0.00s)
+    --- PASS: TestRegister/plugin_with_empty_name (0.00s)
+    --- PASS: TestRegister/plugin_with_empty_version (0.00s)
+    --- PASS: TestRegister/plugin_with_empty_description (0.00s)
+    --- PASS: TestRegister/plugin_with_invalid_version (0.00s)
+    --- PASS: TestRegister/plugin_with_invalid_name_characters (0.00s)
+=== RUN   TestRegisterDuplicate
+--- PASS: TestRegisterDuplicate (0.00s)
+=== RUN   TestUnregister
+--- PASS: TestUnregister (0.00s)
+=== RUN   TestUnregisterNonExistent
+--- PASS: TestUnregisterNonExistent (0.00s)
+=== RUN   TestUnregisterWithDependents
+--- PASS: TestUnregisterWithDependents (0.00s)
+=== RUN   TestGet
+--- PASS: TestGet (0.00s)
+=== RUN   TestGetNonExistent
+--- PASS: TestGetNonExistent (0.00s)
+=== RUN   TestList
+=== RUN   TestList/no_filter
+=== RUN   TestList/filter_by_name
+=== RUN   TestList/filter_by_version
+=== RUN   TestList/filter_by_supported_kind
+=== RUN   TestList/filter_by_capability
+=== RUN   TestList/filter_with_no_matches
+--- PASS: TestList (0.00s)
+    --- PASS: TestList/no_filter (0.00s)
+    --- PASS: TestList/filter_by_name (0.00s)
+    --- PASS: TestList/filter_by_version (0.00s)
+    --- PASS: TestList/filter_by_supported_kind (0.00s)
+    --- PASS: TestList/filter_by_capability (0.00s)
+    --- PASS: TestList/filter_with_no_matches (0.00s)
+=== RUN   TestValidate
+=== RUN   TestValidate/valid_plugin
+=== RUN   TestValidate/nil_plugin
+=== RUN   TestValidate/empty_name
+=== RUN   TestValidate/empty_version
+=== RUN   TestValidate/empty_description
+--- PASS: TestValidate (0.00s)
+    --- PASS: TestValidate/valid_plugin (0.00s)
+    --- PASS: TestValidate/nil_plugin (0.00s)
+    --- PASS: TestValidate/empty_name (0.00s)
+    --- PASS: TestValidate/empty_version (0.00s)
+    --- PASS: TestValidate/empty_description (0.00s)
+=== RUN   TestValidateDependencies
+=== RUN   TestValidateDependencies/no_dependencies
+=== RUN   TestValidateDependencies/satisfied_dependency
+=== RUN   TestValidateDependencies/missing_dependency
+=== RUN   TestValidateDependencies/unsatisfied_version_constraint
+--- PASS: TestValidateDependencies (0.00s)
+    --- PASS: TestValidateDependencies/no_dependencies (0.00s)
+    --- PASS: TestValidateDependencies/satisfied_dependency (0.00s)
+    --- PASS: TestValidateDependencies/missing_dependency (0.00s)
+    --- PASS: TestValidateDependencies/unsatisfied_version_constraint (0.00s)
+=== RUN   TestCircularDependencyDetection
+--- PASS: TestCircularDependencyDetection (0.00s)
+=== RUN   TestSetLoader
+--- PASS: TestSetLoader (0.00s)
+PASS
+ok  	github.com/yourusername/infrastructure-resilience-engine/pkg/core/registry	1.605s
+=== RUN   TestDefaultReporter_RecordEvent
+--- PASS: TestDefaultReporter_RecordEvent (0.00s)
+=== RUN   TestDefaultReporter_RecordExecution
+--- PASS: TestDefaultReporter_RecordExecution (0.00s)
+=== RUN   TestDefaultReporter_QueryEvents
+=== RUN   TestDefaultReporter_QueryEvents/query_by_type
+=== RUN   TestDefaultReporter_QueryEvents/query_by_source
+=== RUN   TestDefaultReporter_QueryEvents/query_by_resource
+--- PASS: TestDefaultReporter_QueryEvents (0.00s)
+    --- PASS: TestDefaultReporter_QueryEvents/query_by_type (0.00s)
+    --- PASS: TestDefaultReporter_QueryEvents/query_by_source (0.00s)
+    --- PASS: TestDefaultReporter_QueryEvents/query_by_resource (0.00s)
+=== RUN   TestDefaultReporter_QueryExecutions
+=== RUN   TestDefaultReporter_QueryExecutions/query_by_plugin
+=== RUN   TestDefaultReporter_QueryExecutions/query_by_resource
+=== RUN   TestDefaultReporter_QueryExecutions/query_by_status
+--- PASS: TestDefaultReporter_QueryExecutions (0.00s)
+    --- PASS: TestDefaultReporter_QueryExecutions/query_by_plugin (0.00s)
+    --- PASS: TestDefaultReporter_QueryExecutions/query_by_resource (0.00s)
+    --- PASS: TestDefaultReporter_QueryExecutions/query_by_status (0.00s)
+=== RUN   TestDefaultReporter_ComputeStatistics
+--- PASS: TestDefaultReporter_ComputeStatistics (0.00s)
+=== RUN   TestDefaultReporter_GenerateReport
+=== RUN   TestDefaultReporter_GenerateReport/json_format
+=== RUN   TestDefaultReporter_GenerateReport/markdown_format
+=== RUN   TestDefaultReporter_GenerateReport/html_format
+=== RUN   TestDefaultReporter_GenerateReport/unknown_format
+--- PASS: TestDefaultReporter_GenerateReport (0.00s)
+    --- PASS: TestDefaultReporter_GenerateReport/json_format (0.00s)
+    --- PASS: TestDefaultReporter_GenerateReport/markdown_format (0.00s)
+    --- PASS: TestDefaultReporter_GenerateReport/html_format (0.00s)
+    --- PASS: TestDefaultReporter_GenerateReport/unknown_format (0.00s)
+=== RUN   TestDefaultReporter_SetStorage
+--- PASS: TestDefaultReporter_SetStorage (0.00s)
+=== RUN   TestDefaultReporter_RegisterFormatter
+--- PASS: TestDefaultReporter_RegisterFormatter (0.00s)
+PASS
+ok  	github.com/yourusername/infrastructure-resilience-engine/pkg/core/reporter	1.938s
+=== RUN   TestProperty58_MockImplementationsExistForAllInterfaces
++ mock implementations exist for all interfaces: OK, passed 100 tests.
+--- PASS: TestProperty58_MockImplementationsExistForAllInterfaces (0.00s)
+=== RUN   TestProperty58_MocksCanBeConfiguredWithErrors
++ mocks can be configured to return errors: OK, passed 100 tests.
+--- PASS: TestProperty58_MocksCanBeConfiguredWithErrors (0.00s)
+=== RUN   TestProperty58_MocksTrackMethodCalls
++ mocks track method call counts: OK, passed 100 tests.
+--- PASS: TestProperty58_MocksTrackMethodCalls (0.00s)
+=== RUN   TestProperty58_ResourceBuilderProducesValidResources
++ ResourceBuilder produces valid resources: OK, passed 100 tests.
+--- PASS: TestProperty58_ResourceBuilderProducesValidResources (0.00s)
+=== RUN   TestProperty58_TestHarnessProviesAllComponents
++ TestHarness provides all required components: OK, passed 100 tests.
+--- PASS: TestProperty58_TestHarnessProviesAllComponents (0.00s)
+PASS
+ok  	github.com/yourusername/infrastructure-resilience-engine/pkg/core/testing	2.314s
+=== RUN   TestProperty17_AdapterProvidesAllRequiredMethods
++ adapter implements all required methods: OK, passed 100 tests.
+--- PASS: TestProperty17_AdapterProvidesAllRequiredMethods (0.00s)
+=== RUN   TestProperty21_AdapterInterfaceIsSufficientForAllPlatforms
++ adapter interface supports all platform operations: OK, passed 100 tests.
+--- PASS: TestProperty21_AdapterInterfaceIsSufficientForAllPlatforms (0.00s)
+=== RUN   TestProperty43_MultipleConfigProvidersAreSupported
++ multiple config providers are supported: OK, passed 100 tests.
+--- PASS: TestProperty43_MultipleConfigProvidersAreSupported (0.04s)
+=== RUN   TestProperty44_ConfigMergeFollowsPrecedence
++ config merge follows precedence: OK, passed 100 tests.
+--- PASS: TestProperty44_ConfigMergeFollowsPrecedence (0.00s)
+=== RUN   TestProperty47_CustomConfigProvidersAreSupported
++ custom config providers are supported: OK, passed 100 tests.
+--- PASS: TestProperty47_CustomConfigProvidersAreSupported (0.05s)
+=== RUN   TestProperty38_EventsAreDeliveredToAllMatchingSubscribers
++ events are delivered to all matching subscribers: OK, passed 100 tests.
+--- PASS: TestProperty38_EventsAreDeliveredToAllMatchingSubscribers (0.00s)
+=== RUN   TestProperty39_SubscriptionReceivesOnlyMatchingEvents
++ subscription receives only matching events: OK, passed 100 tests.
+--- PASS: TestProperty39_SubscriptionReceivesOnlyMatchingEvents (0.56s)
+=== RUN   TestProperty40_UnsubscribeStopsEventDelivery
++ unsubscribe stops event delivery: OK, passed 100 tests.
+--- PASS: TestProperty40_UnsubscribeStopsEventDelivery (0.21s)
+=== RUN   TestProperty22_ExecutionStrategyIsApplied
++ execution strategy is applied: OK, passed 100 tests.
+--- PASS: TestProperty22_ExecutionStrategyIsApplied (0.00s)
+=== RUN   TestProperty23_ConcurrencyLimitsAreRespected
++ concurrency limits are respected: OK, passed 100 tests.
+--- PASS: TestProperty23_ConcurrencyLimitsAreRespected (0.77s)
+=== RUN   TestProperty24_TimeoutCancelsExecution
++ timeout cancels execution: OK, passed 100 tests.
+--- PASS: TestProperty24_TimeoutCancelsExecution (0.82s)
+=== RUN   TestProperty28_HealthCheckUsesRegisteredStrategy
++ health check uses registered strategy for resource config type: OK,
+   passed 100 tests.
+--- PASS: TestProperty28_HealthCheckUsesRegisteredStrategy (0.02s)
+=== RUN   TestProperty32_CustomHealthCheckStrategiesAreSupported
++ custom health check strategies work without Core modification: OK,
+   passed 100 tests.
+--- PASS: TestProperty32_CustomHealthCheckStrategiesAreSupported (0.00s)
+=== RUN   TestProperty29_ConditionWaitingPollsUntilMetOrTimeout
++ condition waiting times out when condition is never met: OK, passed 100
+   tests.
++ condition waiting succeeds when condition is met: OK, passed 100 tests.
+--- PASS: TestProperty29_ConditionWaitingPollsUntilMetOrTimeout (37.01s)
+=== RUN   TestProperty30_MetricsCollectionDelegatesToAdapter
++ metrics collection delegates to adapter and returns normalized metrics:
+   OK, passed 100 tests.
+--- PASS: TestProperty30_MetricsCollectionDelegatesToAdapter (0.00s)
+=== RUN   TestProperty53_LogsContainStructuredFields
++ logs contain all required structured fields: OK, passed 100 tests.
+--- PASS: TestProperty53_LogsContainStructuredFields (0.00s)
+=== RUN   TestProperty55_TraceSpanIsCreatedAndPropagated
++ trace span is created and propagated in context: OK, passed 100 tests.
+--- PASS: TestProperty55_TraceSpanIsCreatedAndPropagated (0.00s)
+=== RUN   TestProperty57_CustomObservabilityProvidersAreSupported
++ custom observability providers work without Core modification: OK,
+   passed 100 tests.
+--- PASS: TestProperty57_CustomObservabilityProvidersAreSupported (0.00s)
+=== RUN   TestProperty11_PluginMetadataIsComplete
++ plugin metadata contains all required fields: OK, passed 100 tests.
++ plugin metadata supports dependencies: OK, passed 100 tests.
++ plugin metadata supports multiple capabilities: OK, passed 100 tests.
+--- PASS: TestProperty11_PluginMetadataIsComplete (0.01s)
+=== RUN   TestProperty12_PluginLifecycleHooksExecuteInOrder
++ lifecycle hooks execute in correct order: OK, passed 100 tests.
++ cleanup executes even after execute failure: OK, passed 100 tests.
+--- PASS: TestProperty12_PluginLifecycleHooksExecuteInOrder (0.00s)
+=== RUN   TestProperty13_RollbackIsInvokedOnFailure
++ rollback is invoked with snapshot on failure: OK, passed 100 tests.
++ rollback uses correct snapshot: OK, passed 100 tests.
++ cleanup executes after rollback: OK, passed 100 tests.
+--- PASS: TestProperty13_RollbackIsInvokedOnFailure (0.00s)
+=== RUN   TestProperty59_PluginsAreDiscoveredFromDirectories
++ discover finds all plugins in directory: OK, passed 100 tests.
++ discover handles empty directory: OK, passed 100 tests.
++ discover ignores invalid plugins: OK, passed 100 tests.
+--- PASS: TestProperty59_PluginsAreDiscoveredFromDirectories (0.00s)
+=== RUN   TestProperty60_PluginValidationOccursOnRegistration
++ registration validates plugin metadata: OK, passed 100 tests.
++ registration rejects duplicate plugin names: OK, passed 100 tests.
++ validation checks interface compliance: OK, passed 100 tests.
++ validation checks dependencies: OK, passed 100 tests.
+--- PASS: TestProperty60_PluginValidationOccursOnRegistration (0.01s)
+=== RUN   TestProperty63_HotReloadUpdatesPluginsWithoutRestart
++ reload updates plugin version: OK, passed 100 tests.
++ reload preserves other plugins: OK, passed 100 tests.
++ reload fails for non-existent plugin: OK, passed 100 tests.
+--- PASS: TestProperty63_HotReloadUpdatesPluginsWithoutRestart (0.01s)
+=== RUN   TestProperty33_ExecutionRecordIsComplete
++ execution record contains all required fields: OK, passed 100 tests.
+--- PASS: TestProperty33_ExecutionRecordIsComplete (0.00s)
+=== RUN   TestProperty34_EventRecordIsComplete
++ event record contains all required fields: OK, passed 100 tests.
+--- PASS: TestProperty34_EventRecordIsComplete (0.00s)
+=== RUN   TestProperty35_StatisticsAreCalculatedCorrectly
++ statistics are calculated correctly from execution records: OK, passed
+   100 tests.
+--- PASS: TestProperty35_StatisticsAreCalculatedCorrectly (0.00s)
+=== RUN   TestProperty36_ReportUsesRegisteredFormatter
++ report generation uses registered formatter: OK, passed 100 tests.
+--- PASS: TestProperty36_ReportUsesRegisteredFormatter (0.00s)
+=== RUN   TestProperty37_CustomStorageBackendsAreSupported
++ custom storage backends work without Core modification: OK, passed 100
+   tests.
+--- PASS: TestProperty37_CustomStorageBackendsAreSupported (0.00s)
+=== RUN   TestProperty48_AuthorizationIsCheckedBeforeExecution
++ authorization is checked before execution: OK, passed 100 tests.
+--- PASS: TestProperty48_AuthorizationIsCheckedBeforeExecution (0.00s)
+=== RUN   TestProperty50_SecretsAreNotExposedInLogs
++ secrets are not exposed in logs: OK, passed 100 tests.
+--- PASS: TestProperty50_SecretsAreNotExposedInLogs (0.00s)
+=== RUN   TestProperty52_CustomSecurityProvidersAreSupported
++ custom security providers work without Core modification: OK, passed 100
+   tests.
+--- PASS: TestProperty52_CustomSecurityProvidersAreSupported (0.00s)
+=== RUN   TestPlaceholder
+    types_test.go:13: Test infrastructure is working
+--- PASS: TestPlaceholder (0.00s)
+=== RUN   TestProperty_ResourceContainsEnvironmentAgnosticFields
++ Resource contains all required environment-agnostic fields: OK, passed
+   100 tests.
+--- PASS: TestProperty_ResourceContainsEnvironmentAgnosticFields (0.10s)
+=== RUN   TestProperty_ResourceSupportsArbitraryMetadata
++ Resource metadata preserves arbitrary key-value pairs: OK, passed 100
+   tests.
++ Resource metadata supports nested structures: OK, passed 100 tests.
++ Resource metadata supports multiple entries: OK, passed 100 tests.
+--- PASS: TestProperty_ResourceSupportsArbitraryMetadata (0.04s)
+PASS
+ok  	github.com/yourusername/infrastructure-resilience-engine/pkg/core/types	42.272s
