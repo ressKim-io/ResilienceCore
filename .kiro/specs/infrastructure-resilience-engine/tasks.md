@@ -209,7 +209,7 @@
   - **Property 73: Resource locking prevents concurrent execution**
   - **검증: 요구사항 3.2, 3.3, 5.2, 5.3, 14.1, 15.5**
 
-- [ ] 16. Workflow 실행 구현
+- [x] 16. Workflow 실행 구현
   - ExecuteWorkflow 메서드 구현
   - 의존성 그래프 구축 및 순환 의존성 감지
   - 위상 정렬 구현
@@ -218,7 +218,7 @@
   - 조건부 실행 구현
   - _요구사항: 5.4, 5.5, 16.1, 16.2, 16.3, 16.4, 16.5_
 
-- [ ] 16.1 Workflow 속성 기반 테스트 작성
+- [x] 16.1 Workflow 속성 기반 테스트 작성
   - **Property 25: Workflow respects dependencies**
   - **Property 74: Workflow supports sequential and parallel execution**
   - **Property 75: Dependencies are waited for**
