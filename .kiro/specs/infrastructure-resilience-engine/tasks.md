@@ -285,20 +285,20 @@
   - **Property 36: Report uses registered formatter**
   - **검증: 요구사항 7.1, 7.2, 7.3, 7.4**
 
-- [ ] 19. InMemoryEventBus 구현
+- [x] 19. InMemoryEventBus 구현
   - Publish, PublishAsync 메서드 구현
   - Subscribe 메서드 구현 (필터링)
   - Unsubscribe 구현
   - Close 구현 (모든 채널 닫기)
   - _요구사항: 8.1, 8.2, 8.3, 8.4, 8.5_
 
-- [ ] 19.1 EventBus 단위 테스트 작성
+- [x] 19.1 EventBus 단위 테스트 작성
   - 이벤트 발행/구독 테스트
   - 필터링 테스트
   - 구독 취소 테스트
   - 종료 테스트
 
-- [ ] 19.2 EventBus 속성 기반 테스트 작성
+- [x] 19.2 EventBus 속성 기반 테스트 작성
   - **Property 38: Events are delivered to all matching subscribers**
   - **Property 39: Subscription receives only matching events**
   - **Property 40: Unsubscribe stops event delivery**
