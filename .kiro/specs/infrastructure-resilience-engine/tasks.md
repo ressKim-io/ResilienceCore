@@ -177,7 +177,7 @@
 
 **목표**: Core 컴포넌트의 기본 구현 완성
 
-- [ ] 15. DefaultExecutionEngine 구현
+- [x] 15. DefaultExecutionEngine 구현
   - 플러그인 등록/해제 구현
   - Execute 메서드 구현 (라이프사이클 훅 순서 보장)
   - ExecuteAsync 메서드 구현 (Future 반환)
@@ -186,21 +186,21 @@
   - 에러 처리 및 롤백 구현
   - _요구사항: 5.1, 5.2, 5.3, 14.1, 14.2, 14.3, 15.5_
 
-- [ ] 15.1 실행 전략 구현
+- [x] 15.1 실행 전략 구현
   - SimpleStrategy 구현
   - RetryStrategy 구현 (지수 백오프)
   - CircuitBreakerStrategy 구현
   - RateLimitStrategy 구현
   - _요구사항: 5.1, 14.1_
 
-- [ ] 15.2 ExecutionEngine 단위 테스트 작성
+- [x] 15.2 ExecutionEngine 단위 테스트 작성
   - 플러그인 등록/해제 테스트
   - 라이프사이클 훅 순서 테스트
   - 동시성 제한 테스트
   - 타임아웃 테스트
   - 롤백 테스트
 
-- [ ] 15.3 ExecutionEngine 속성 기반 테스트 작성
+- [x] 15.3 ExecutionEngine 속성 기반 테스트 작성
   - **Property 12: Plugin lifecycle hooks execute in order**
   - **Property 13: Rollback is invoked on failure**
   - **Property 23: Concurrency limits are respected**
