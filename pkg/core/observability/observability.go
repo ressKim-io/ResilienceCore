@@ -72,6 +72,12 @@ func (l *StdoutLogger) With(fields ...types.Field) types.Logger {
 	}
 }
 
+// writeToWriter writes to the writer and returns any error
+func (l *StdoutLogger) writeToWriter(s string) error {
+	_, err := fmt.Fprint(l.writer, s)
+	return err
+}
+
 // log writes a structured log entry
 func (l *StdoutLogger) log(level, msg string, fields ...types.Field) {
 	l.mu.Lock()
@@ -97,11 +103,13 @@ func (l *StdoutLogger) log(level, msg string, fields ...types.Field) {
 	data, err := json.Marshal(entry)
 	if err != nil {
 		// Fallback to simple format if JSON marshaling fails
-		fmt.Fprintf(l.writer, "[%s] %s %s\n", level, time.Now().Format(time.RFC3339), msg)
+		// nolint:errcheck // Ignore write errors as there's nothing we can do in a logger
+		_ = l.writeToWriter(fmt.Sprintf("[%s] %s %s\n", level, time.Now().Format(time.RFC3339), msg))
 		return
 	}
 
-	fmt.Fprintf(l.writer, "%s\n", data)
+	// nolint:errcheck // Ignore write errors as there's nothing we can do in a logger
+	_ = l.writeToWriter(fmt.Sprintf("%s\n", data))
 }
 
 // ============================================================================
@@ -140,10 +148,10 @@ func (c *noOpCounter) Add(delta float64) {}
 // noOpGauge is a gauge that does nothing
 type noOpGauge struct{}
 
-func (g *noOpGauge) Set(value float64)   {}
-func (g *noOpGauge) Inc()                {}
-func (g *noOpGauge) Dec()                {}
-func (g *noOpGauge) Add(delta float64)   {}
+func (g *noOpGauge) Set(value float64) {}
+func (g *noOpGauge) Inc()              {}
+func (g *noOpGauge) Dec()              {}
+func (g *noOpGauge) Add(delta float64) {}
 
 // noOpHistogram is a histogram that does nothing
 type noOpHistogram struct{}
@@ -172,11 +180,11 @@ type noOpSpan struct {
 	ctx context.Context
 }
 
-func (s *noOpSpan) SetTag(key string, value interface{})  {}
-func (s *noOpSpan) LogEvent(event string)                 {}
-func (s *noOpSpan) LogFields(fields ...types.Field)       {}
-func (s *noOpSpan) Finish()                               {}
-func (s *noOpSpan) Context() context.Context              { return s.ctx }
+func (s *noOpSpan) SetTag(key string, value interface{}) {}
+func (s *noOpSpan) LogEvent(event string)                {}
+func (s *noOpSpan) LogFields(fields ...types.Field)      {}
+func (s *noOpSpan) Finish()                              {}
+func (s *noOpSpan) Context() context.Context             { return s.ctx }
 
 // ============================================================================
 // DefaultObservabilityProvider - Combines all observability components

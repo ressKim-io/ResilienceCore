@@ -125,14 +125,11 @@ func TestStdoutLogger_WithDoesNotMutateParent(t *testing.T) {
 	var buf1, buf2 bytes.Buffer
 	logger := NewStdoutLoggerWithWriter(&buf1)
 
-	// Create child logger
-	childLogger := logger.With(types.Field{Key: "child", Value: "true"})
-
 	// Log with parent - should not have child field
 	logger.Info("parent message")
 
-	// Change writer for child to separate output
-	childLogger = NewStdoutLoggerWithWriter(&buf2).With(types.Field{Key: "child", Value: "true"})
+	// Create child logger with separate writer
+	childLogger := NewStdoutLoggerWithWriter(&buf2).With(types.Field{Key: "child", Value: "true"})
 	childLogger.Info("child message")
 
 	// Parse parent log
@@ -346,8 +343,9 @@ func TestObservability_Integration(t *testing.T) {
 	)
 
 	// Start trace
-	ctx, span := provider.Tracer().StartSpan(ctx, "plugin_execution")
+	newCtx, span := provider.Tracer().StartSpan(ctx, "plugin_execution")
 	defer span.Finish()
+	_ = newCtx // Context is propagated but not used in this test
 
 	// Log execution start
 	executionLogger.Info("starting plugin execution",
