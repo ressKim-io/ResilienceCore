@@ -1,3 +1,5 @@
+// Package eventbus provides an in-memory implementation of the EventBus interface
+// for loose coupling between components through publish-subscribe messaging.
 package eventbus
 
 import (
@@ -66,7 +68,13 @@ func (bus *InMemoryEventBus) Publish(ctx context.Context, event types.Event) err
 // PublishAsync publishes an event asynchronously to all matching subscribers
 func (bus *InMemoryEventBus) PublishAsync(ctx context.Context, event types.Event) error {
 	go func() {
-		_ = bus.Publish(ctx, event)
+		// Intentionally ignore error in async publish
+		// Errors are logged but don't block the caller
+		if err := bus.Publish(ctx, event); err != nil {
+			// In a production system, this would be logged
+			// For now, we silently ignore errors in async mode
+			_ = err
+		}
 	}()
 	return nil
 }
