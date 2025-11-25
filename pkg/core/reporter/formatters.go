@@ -1,3 +1,4 @@
+// Package reporter provides report formatting implementations for the Infrastructure Resilience Engine.
 package reporter
 
 import (
@@ -79,7 +80,7 @@ func (f *MarkdownFormatter) Name() string {
 
 func (f *MarkdownFormatter) formatStatistics(sb *strings.Builder, stats types.Statistics) {
 	sb.WriteString("# Execution Statistics\n\n")
-	
+
 	sb.WriteString("## Summary\n\n")
 	sb.WriteString(fmt.Sprintf("- **Total Executions**: %d\n", stats.TotalExecutions))
 	sb.WriteString(fmt.Sprintf("- **Success Count**: %d\n", stats.SuccessCount))
@@ -88,7 +89,7 @@ func (f *MarkdownFormatter) formatStatistics(sb *strings.Builder, stats types.St
 	sb.WriteString(fmt.Sprintf("- **Canceled Count**: %d\n", stats.CanceledCount))
 	sb.WriteString(fmt.Sprintf("- **Success Rate**: %.2f%%\n", stats.SuccessRate*100))
 	sb.WriteString(fmt.Sprintf("- **MTTR**: %s\n\n", stats.MTTR))
-	
+
 	sb.WriteString("## Duration Statistics\n\n")
 	sb.WriteString(fmt.Sprintf("- **Average**: %s\n", stats.AverageDuration))
 	sb.WriteString(fmt.Sprintf("- **P50**: %s\n", stats.P50Duration))
@@ -96,7 +97,7 @@ func (f *MarkdownFormatter) formatStatistics(sb *strings.Builder, stats types.St
 	sb.WriteString(fmt.Sprintf("- **P99**: %s\n", stats.P99Duration))
 	sb.WriteString(fmt.Sprintf("- **Min**: %s\n", stats.MinDuration))
 	sb.WriteString(fmt.Sprintf("- **Max**: %s\n\n", stats.MaxDuration))
-	
+
 	if len(stats.ByPlugin) > 0 {
 		sb.WriteString("## By Plugin\n\n")
 		sb.WriteString("| Plugin | Executions | Success | Failure | Success Rate | Avg Duration |\n")
@@ -108,7 +109,7 @@ func (f *MarkdownFormatter) formatStatistics(sb *strings.Builder, stats types.St
 		}
 		sb.WriteString("\n")
 	}
-	
+
 	if len(stats.ByResource) > 0 {
 		sb.WriteString("## By Resource\n\n")
 		sb.WriteString("| Resource | Executions | Success | Failure | Success Rate | Avg Duration |\n")
@@ -126,7 +127,7 @@ func (f *MarkdownFormatter) formatExecutionRecords(sb *strings.Builder, records 
 	sb.WriteString("# Execution Records\n\n")
 	sb.WriteString("| ID | Plugin | Resource | Status | Duration | Start Time | Error |\n")
 	sb.WriteString("|----|--------|----------|--------|----------|------------|-------|\n")
-	
+
 	for _, rec := range records {
 		errorMsg := ""
 		if rec.Error != "" {
@@ -145,7 +146,7 @@ func (f *MarkdownFormatter) formatEvents(sb *strings.Builder, events []types.Eve
 	sb.WriteString("# Events\n\n")
 	sb.WriteString("| ID | Type | Source | Timestamp | Resource |\n")
 	sb.WriteString("|----|------|--------|-----------|----------|\n")
-	
+
 	for _, evt := range events {
 		resourceName := ""
 		if evt.Resource.Name != "" {
@@ -212,7 +213,7 @@ func (f *HTMLFormatter) Name() string {
 
 func (f *HTMLFormatter) formatStatistics(sb *strings.Builder, stats types.Statistics) {
 	sb.WriteString("<h1>Execution Statistics</h1>\n")
-	
+
 	sb.WriteString("<div class='summary'>\n")
 	sb.WriteString("<h2>Summary</h2>\n")
 	sb.WriteString(fmt.Sprintf("<p><strong>Total Executions:</strong> %d</p>\n", stats.TotalExecutions))
@@ -223,7 +224,7 @@ func (f *HTMLFormatter) formatStatistics(sb *strings.Builder, stats types.Statis
 	sb.WriteString(fmt.Sprintf("<p><strong>Success Rate:</strong> %.2f%%</p>\n", stats.SuccessRate*100))
 	sb.WriteString(fmt.Sprintf("<p><strong>MTTR:</strong> %s</p>\n", stats.MTTR))
 	sb.WriteString("</div>\n")
-	
+
 	sb.WriteString("<h2>Duration Statistics</h2>\n")
 	sb.WriteString("<table>\n")
 	sb.WriteString("<tr><th>Metric</th><th>Value</th></tr>\n")
@@ -234,7 +235,7 @@ func (f *HTMLFormatter) formatStatistics(sb *strings.Builder, stats types.Statis
 	sb.WriteString(fmt.Sprintf("<tr><td>Min</td><td>%s</td></tr>\n", stats.MinDuration))
 	sb.WriteString(fmt.Sprintf("<tr><td>Max</td><td>%s</td></tr>\n", stats.MaxDuration))
 	sb.WriteString("</table>\n")
-	
+
 	if len(stats.ByPlugin) > 0 {
 		sb.WriteString("<h2>By Plugin</h2>\n")
 		sb.WriteString("<table>\n")
@@ -246,7 +247,7 @@ func (f *HTMLFormatter) formatStatistics(sb *strings.Builder, stats types.Statis
 		}
 		sb.WriteString("</table>\n")
 	}
-	
+
 	if len(stats.ByResource) > 0 {
 		sb.WriteString("<h2>By Resource</h2>\n")
 		sb.WriteString("<table>\n")
@@ -264,7 +265,7 @@ func (f *HTMLFormatter) formatExecutionRecords(sb *strings.Builder, records []ty
 	sb.WriteString("<h1>Execution Records</h1>\n")
 	sb.WriteString("<table>\n")
 	sb.WriteString("<tr><th>ID</th><th>Plugin</th><th>Resource</th><th>Status</th><th>Duration</th><th>Start Time</th><th>Error</th></tr>\n")
-	
+
 	for _, rec := range records {
 		errorMsg := ""
 		if rec.Error != "" {
@@ -281,7 +282,7 @@ func (f *HTMLFormatter) formatEvents(sb *strings.Builder, events []types.Event) 
 	sb.WriteString("<h1>Events</h1>\n")
 	sb.WriteString("<table>\n")
 	sb.WriteString("<tr><th>ID</th><th>Type</th><th>Source</th><th>Timestamp</th><th>Resource</th></tr>\n")
-	
+
 	for _, evt := range events {
 		resourceName := ""
 		if evt.Resource.Name != "" {

@@ -30,11 +30,11 @@ func (s *InMemoryStorage) Save(ctx context.Context, key string, value interface{
 
 	// Extract collection from key (format: "collection:id")
 	collection, id := parseKey(key)
-	
+
 	if s.collections[collection] == nil {
 		s.collections[collection] = make(map[string]interface{})
 	}
-	
+
 	s.collections[collection][id] = value
 	return nil
 }
@@ -45,16 +45,16 @@ func (s *InMemoryStorage) Load(ctx context.Context, key string) (interface{}, er
 	defer s.mu.RUnlock()
 
 	collection, id := parseKey(key)
-	
+
 	if s.collections[collection] == nil {
 		return nil, fmt.Errorf("collection %s not found", collection)
 	}
-	
+
 	value, ok := s.collections[collection][id]
 	if !ok {
 		return nil, fmt.Errorf("key %s not found", key)
 	}
-	
+
 	return value, nil
 }
 
@@ -86,7 +86,7 @@ func (s *InMemoryStorage) Query(ctx context.Context, query types.Query) ([]inter
 	if start > len(results) {
 		start = len(results)
 	}
-	
+
 	end := start + query.Limit
 	if query.Limit == 0 || end > len(results) {
 		end = len(results)
@@ -101,11 +101,11 @@ func (s *InMemoryStorage) Delete(ctx context.Context, key string) error {
 	defer s.mu.Unlock()
 
 	collection, id := parseKey(key)
-	
+
 	if s.collections[collection] == nil {
 		return fmt.Errorf("collection %s not found", collection)
 	}
-	
+
 	delete(s.collections[collection], id)
 	return nil
 }
@@ -114,7 +114,7 @@ func (s *InMemoryStorage) Delete(ctx context.Context, key string) error {
 func (s *InMemoryStorage) Close() error {
 	s.mu.Lock()
 	defer s.mu.Unlock()
-	
+
 	s.collections = make(map[string]map[string]interface{})
 	return nil
 }
@@ -203,7 +203,10 @@ func sortResults(results []interface{}, sortFields []types.SortField) {
 func compareValues(a, b interface{}) int {
 	switch va := a.(type) {
 	case int:
-		vb := b.(int)
+		vb, ok := b.(int)
+		if !ok {
+			return 0
+		}
 		if va < vb {
 			return -1
 		} else if va > vb {
@@ -211,7 +214,10 @@ func compareValues(a, b interface{}) int {
 		}
 		return 0
 	case int64:
-		vb := b.(int64)
+		vb, ok := b.(int64)
+		if !ok {
+			return 0
+		}
 		if va < vb {
 			return -1
 		} else if va > vb {
@@ -219,7 +225,10 @@ func compareValues(a, b interface{}) int {
 		}
 		return 0
 	case float64:
-		vb := b.(float64)
+		vb, ok := b.(float64)
+		if !ok {
+			return 0
+		}
 		if va < vb {
 			return -1
 		} else if va > vb {
@@ -227,7 +236,10 @@ func compareValues(a, b interface{}) int {
 		}
 		return 0
 	case string:
-		vb := b.(string)
+		vb, ok := b.(string)
+		if !ok {
+			return 0
+		}
 		if va < vb {
 			return -1
 		} else if va > vb {

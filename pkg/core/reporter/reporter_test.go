@@ -423,9 +423,9 @@ func TestDefaultReporter_SetStorage(t *testing.T) {
 	}
 
 	query := types.ExecutionQuery{PluginNames: []string{"test"}}
-	results, err := reporter.QueryExecutions(ctx, query)
-	if err != nil {
-		t.Fatalf("QueryExecutions failed: %v", err)
+	results, err2 := reporter.QueryExecutions(ctx, query)
+	if err2 != nil {
+		t.Fatalf("QueryExecutions failed: %v", err2)
 	}
 
 	if len(results) != 1 {
@@ -454,14 +454,14 @@ func TestDefaultReporter_RegisterFormatter(t *testing.T) {
 		Status:     types.StatusSuccess,
 	}
 
-	if err := reporter.RecordExecution(ctx, exec); err != nil {
-		t.Fatalf("RecordExecution failed: %v", err)
+	if err2 := reporter.RecordExecution(ctx, exec); err2 != nil {
+		t.Fatalf("RecordExecution failed: %v", err2)
 	}
 
 	filter := types.ReportFilter{}
-	report, err := reporter.GenerateReport(ctx, "custom", filter)
-	if err != nil {
-		t.Fatalf("GenerateReport failed: %v", err)
+	report, err3 := reporter.GenerateReport(ctx, "custom", filter)
+	if err3 != nil {
+		t.Fatalf("GenerateReport failed: %v", err3)
 	}
 
 	if len(report) == 0 {
