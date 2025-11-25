@@ -17,9 +17,9 @@ type DefaultExecutionEngine struct {
 	mu      sync.RWMutex
 
 	// Execution tracking
-	executions      map[string]*executionState
-	executionsMu    sync.RWMutex
-	
+	executions   map[string]*executionState
+	executionsMu sync.RWMutex
+
 	// Resource locking to prevent concurrent execution on same resource
 	resourceLocks   map[string]*sync.Mutex
 	resourceLocksMu sync.Mutex
@@ -436,7 +436,10 @@ func (e *DefaultExecutionEngine) ExecuteAsync(ctx context.Context, request types
 		defer close(future.done)
 		defer cancel()
 
-		result, _ := e.Execute(execCtx, request)
+		result, err := e.Execute(execCtx, request)
+		if err != nil && e.logger != nil {
+			e.logger.Error("async execution failed", types.Field{Key: "error", Value: err})
+		}
 
 		state.resultMu.Lock()
 		state.result = result

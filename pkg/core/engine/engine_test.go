@@ -115,10 +115,10 @@ func TestDefaultExecutionEngine_ListPlugins(t *testing.T) {
 	engine.RegisterPlugin(plugin2)
 
 	tests := []struct {
-		name       string
-		filter     types.PluginFilter
-		wantCount  int
-		wantNames  []string
+		name      string
+		filter    types.PluginFilter
+		wantCount int
+		wantNames []string
 	}{
 		{
 			name:      "no filter",
@@ -490,7 +490,7 @@ func TestDefaultExecutionEngine_ResourceLocking(t *testing.T) {
 
 func TestDefaultExecutionEngine_WithComponents(t *testing.T) {
 	engine := NewDefaultExecutionEngine()
-	
+
 	// Create mock components
 	monitor := coretesting.NewMockMonitor()
 	reporter := coretesting.NewMockReporter()

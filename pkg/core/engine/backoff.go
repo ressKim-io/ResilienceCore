@@ -1,3 +1,4 @@
+// Package engine provides the default implementation of the ExecutionEngine interface.
 package engine
 
 import (

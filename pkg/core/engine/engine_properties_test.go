@@ -24,7 +24,7 @@ func TestProperty12_PluginLifecycleHooksExecuteInOrder(t *testing.T) {
 	properties.Property("lifecycle hooks execute in correct order", prop.ForAll(
 		func(resourceID, resourceName string) bool {
 			engine := NewDefaultExecutionEngine()
-			
+
 			plugin := coretesting.NewMockPlugin("test-plugin")
 			engine.RegisterPlugin(plugin)
 
@@ -66,7 +66,7 @@ func TestProperty13_RollbackIsInvokedOnFailure(t *testing.T) {
 	properties.Property("rollback is called when execution fails", prop.ForAll(
 		func(resourceID string) bool {
 			engine := NewDefaultExecutionEngine()
-			
+
 			plugin := coretesting.NewMockPlugin("test-plugin")
 			plugin.ExecuteError = errors.New("execution failed")
 
@@ -95,10 +95,10 @@ func TestProperty13_RollbackIsInvokedOnFailure(t *testing.T) {
 	properties.Property("rollback receives snapshot from PreExecute", prop.ForAll(
 		func(resourceID string) bool {
 			engine := NewDefaultExecutionEngine()
-			
+
 			plugin := coretesting.NewMockPlugin("test-plugin")
 			plugin.ExecuteError = errors.New("execution failed")
-			
+
 			// Create a specific snapshot
 			snapshot := coretesting.NewMockSnapshot(types.Resource{ID: resourceID})
 			plugin.SnapshotToReturn = snapshot
@@ -140,7 +140,7 @@ func TestProperty23_ConcurrencyLimitsAreRespected(t *testing.T) {
 			if limit == 0 {
 				return true // Skip invalid input
 			}
-			
+
 			actualLimit := int(limit%100) + 1 // 1-100
 
 			engine := NewDefaultExecutionEngine()
@@ -157,7 +157,7 @@ func TestProperty23_ConcurrencyLimitsAreRespected(t *testing.T) {
 			if numExecutions == 0 {
 				return true
 			}
-			
+
 			actualNum := int(numExecutions%10) + 1 // 1-10
 
 			engine := NewDefaultExecutionEngine()
@@ -174,7 +174,7 @@ func TestProperty23_ConcurrencyLimitsAreRespected(t *testing.T) {
 				wg.Add(1)
 				go func(idx int) {
 					defer wg.Done()
-					
+
 					resource := types.Resource{
 						ID:   "resource-" + string(rune(idx)),
 						Name: "test-resource",
@@ -281,11 +281,11 @@ func TestProperty64_RetryableErrorsTriggerRetryWithBackoff(t *testing.T) {
 			if maxRetries == 0 {
 				return true // Skip invalid input
 			}
-			
+
 			actualMaxRetries := int(maxRetries % 3) // 0-2 retries (keep it small)
 
 			engine := NewDefaultExecutionEngine()
-			
+
 			plugin := coretesting.NewMockPlugin("test-plugin")
 			plugin.ExecuteError = errors.New("retryable error")
 
@@ -298,14 +298,14 @@ func TestProperty64_RetryableErrorsTriggerRetryWithBackoff(t *testing.T) {
 			}
 
 			ctx := context.Background()
-			
+
 			// Use retry strategy with minimal backoff
 			backoff := &ExponentialBackoff{
 				InitialDelay: 1 * time.Millisecond,
 				MaxDelay:     10 * time.Millisecond,
 				Multiplier:   2.0,
 			}
-			
+
 			strategy := &types.RetryStrategy{
 				MaxRetries: actualMaxRetries,
 				Backoff:    backoff,
@@ -331,12 +331,12 @@ func TestProperty64_RetryableErrorsTriggerRetryWithBackoff(t *testing.T) {
 			if attempt > 5 {
 				return true // Skip large values
 			}
-			
+
 			backoff := NewExponentialBackoff()
-			
+
 			delay1 := backoff.NextDelay(int(attempt))
 			delay2 := backoff.NextDelay(int(attempt) + 1)
-			
+
 			// Verify delay increases (or stays at max)
 			return delay2 >= delay1
 		},
@@ -356,11 +356,11 @@ func TestProperty73_ResourceLockingPreventsConcurrentExecution(t *testing.T) {
 	properties.Property("resource locks are created for each resource", prop.ForAll(
 		func(resourceID string) bool {
 			engine := NewDefaultExecutionEngine()
-			
+
 			// Get lock for resource
 			lock1 := engine.getResourceLock(resourceID)
 			lock2 := engine.getResourceLock(resourceID)
-			
+
 			// Same resource should return same lock
 			return lock1 == lock2
 		},
@@ -372,12 +372,12 @@ func TestProperty73_ResourceLockingPreventsConcurrentExecution(t *testing.T) {
 			if resourceID1 == resourceID2 {
 				return true // Skip same IDs
 			}
-			
+
 			engine := NewDefaultExecutionEngine()
-			
+
 			lock1 := engine.getResourceLock(resourceID1)
 			lock2 := engine.getResourceLock(resourceID2)
-			
+
 			// Different resources should have different locks
 			return lock1 != lock2
 		},
@@ -390,7 +390,7 @@ func TestProperty73_ResourceLockingPreventsConcurrentExecution(t *testing.T) {
 			if numExecutions == 0 {
 				return true
 			}
-			
+
 			actualNum := int(numExecutions%5) + 1 // 1-5
 
 			engine := NewDefaultExecutionEngine()
