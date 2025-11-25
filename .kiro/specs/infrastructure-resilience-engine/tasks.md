@@ -363,13 +363,13 @@
   - **Property 88: Version constraints are validated**
   - **검증: 요구사항 13.2, 13.3, 13.4, 18.1, 18.2, 18.3, 18.4, 18.5**
 
-- [ ] 22. 기본 Observability 구현
+- [x] 22. 기본 Observability 구현
   - StdoutLogger 구현 (구조화된 로깅)
   - NoOpMetricsCollector 구현 (메트릭 무시)
   - NoOpTracer 구현 (트레이싱 무시)
   - _요구사항: 11.1, 11.2, 11.3, 11.4, 11.5_
 
-- [ ] 22.1 Observability 속성 기반 테스트 작성
+- [x] 22.1 Observability 속성 기반 테스트 작성
   - **Property 53: Logs contain structured fields**
   - **검증: 요구사항 11.1**
 
