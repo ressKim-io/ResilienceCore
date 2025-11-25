@@ -1,3 +1,6 @@
+// Package config provides a flexible configuration management system with support
+// for multiple configuration sources, precedence-based merging, type conversion,
+// and hot-reloading.
 package config
 
 import (
@@ -228,7 +231,7 @@ func (c *DefaultConfig) mergeValues(newValues map[string]interface{}, priority i
 	for key, newValue := range newValues {
 		// Check if key exists and what priority it has
 		shouldUpdate := true
-		
+
 		// Find the highest priority provider that has this key
 		for _, p := range c.providers {
 			if p.priority > priority {

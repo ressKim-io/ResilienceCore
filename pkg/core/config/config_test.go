@@ -338,7 +338,7 @@ func TestYAMLProvider_Watch(t *testing.T) {
 	// Wait for at least one notification
 	timeout := time.After(3 * time.Second)
 	gotNotification := false
-	
+
 	for !gotNotification {
 		select {
 		case change, ok := <-ch:

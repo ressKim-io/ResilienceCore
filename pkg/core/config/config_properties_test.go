@@ -152,13 +152,13 @@ func TestProperty45_ConfigValuesAreTypeConverted(t *testing.T) {
 			// Set a string value
 			stringKey := key + "_string"
 			stringValue := "123"
-			if err := config.Set(stringKey, stringValue); err != nil {
+			if setErr := config.Set(stringKey, stringValue); setErr != nil {
 				return false
 			}
 
 			// Get as int (should convert)
-			gotIntFromString, err := config.GetInt(stringKey)
-			if err != nil {
+			gotIntFromString, err2 := config.GetInt(stringKey)
+			if err2 != nil {
 				return false
 			}
 			if gotIntFromString != 123 {
@@ -167,13 +167,13 @@ func TestProperty45_ConfigValuesAreTypeConverted(t *testing.T) {
 
 			// Set a bool value
 			boolKey := key + "_bool"
-			if err := config.Set(boolKey, true); err != nil {
+			if setBoolErr := config.Set(boolKey, true); setBoolErr != nil {
 				return false
 			}
 
 			// Get as bool
-			gotBool, err := config.GetBool(boolKey)
-			if err != nil {
+			gotBool, err3 := config.GetBool(boolKey)
+			if err3 != nil {
 				return false
 			}
 			if !gotBool {

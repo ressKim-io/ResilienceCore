@@ -78,7 +78,7 @@ func (p *YAMLProvider) Watch(ctx context.Context) (<-chan types.ConfigChange, er
 			// If file doesn't exist, watch the directory
 			dir := filepath.Dir(p.filePath)
 			if err := p.watcher.Add(dir); err != nil {
-				p.watcher.Close()
+				_ = p.watcher.Close() //nolint:errcheck // cleanup on error
 				p.watcher = nil
 				return nil, fmt.Errorf("failed to watch file %s: %w", p.filePath, err)
 			}
@@ -102,7 +102,7 @@ func (p *YAMLProvider) watchFile(ctx context.Context) {
 		case <-ctx.Done():
 			p.mu.Lock()
 			if p.watcher != nil {
-				p.watcher.Close()
+				_ = p.watcher.Close() //nolint:errcheck // cleanup on context cancellation
 				p.watcher = nil
 			}
 			// Close all watcher channels
