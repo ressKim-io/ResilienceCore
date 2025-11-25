@@ -306,30 +306,30 @@
   - **Property 42: Event filtering supports type, source, and metadata**
   - **검증: 요구사항 8.1, 8.2, 8.3, 8.4, 8.5**
 
-- [ ] 20. DefaultConfig 구현
+- [x] 20. DefaultConfig 구현
   - Get, GetString, GetInt, GetBool, GetDuration 메서드 구현
   - Set 메서드 구현
   - Watch 메서드 구현
   - AddProvider 메서드 구현 (우선순위 기반 병합)
   - _요구사항: 9.1, 9.2, 9.3, 9.4, 9.5_
 
-- [ ] 20.1 YAMLConfigProvider 구현
+- [x] 20.1 YAMLConfigProvider 구현
   - YAML 파일 로딩
   - 파일 감시 (fsnotify)
   - _요구사항: 9.1_
 
-- [ ] 20.2 EnvironmentConfigProvider 구현
+- [x] 20.2 EnvironmentConfigProvider 구현
   - 환경 변수 로딩
   - 접두사 지원
   - _요구사항: 9.1_
 
-- [ ] 20.3 Config 단위 테스트 작성
+- [x] 20.3 Config 단위 테스트 작성
   - 값 조회 테스트
   - 타입 변환 테스트
   - 병합 우선순위 테스트
   - 감시 테스트
 
-- [ ] 20.4 Config 속성 기반 테스트 작성
+- [x] 20.4 Config 속성 기반 테스트 작성
   - **Property 43: Multiple config providers are supported**
   - **Property 44: Config merge follows precedence**
   - **Property 45: Config values are type-converted**
