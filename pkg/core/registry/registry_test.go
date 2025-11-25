@@ -225,11 +225,11 @@ func TestList(t *testing.T) {
 	plugin2 := coretesting.NewMockPlugin("plugin-2")
 	plugin3 := &coretesting.MockPlugin{
 		PluginMetadata: types.PluginMetadata{
-			Name:               "plugin-3",
-			Version:            "2.0.0",
-			Description:        "Plugin 3",
-			Author:             "Test",
-			SupportedKinds:     []string{"container"},
+			Name:                 "plugin-3",
+			Version:              "2.0.0",
+			Description:          "Plugin 3",
+			Author:               "Test",
+			SupportedKinds:       []string{"container"},
 			RequiredCapabilities: []types.Capability{types.CapabilityExec},
 		},
 	}
@@ -239,10 +239,10 @@ func TestList(t *testing.T) {
 	registry.Register(plugin3)
 
 	tests := []struct {
-		name       string
-		filter     types.PluginFilter
-		wantCount  int
-		wantNames  []string
+		name      string
+		filter    types.PluginFilter
+		wantCount int
+		wantNames []string
 	}{
 		{
 			name:      "no filter",

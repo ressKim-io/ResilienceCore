@@ -1,7 +1,6 @@
 package registry
 
 import (
-	"fmt"
 	"testing"
 
 	"github.com/leanovate/gopter"
@@ -845,81 +844,4 @@ func TestProperty88_VersionConstraintsAreValidated(t *testing.T) {
 	))
 
 	properties.TestingRun(t, gopter.ConsoleReporter(false))
-}
-
-// Helper function to create a plugin with specific metadata
-func createPluginWithMetadata(name, version, description string, deps []types.PluginDependency) *coretesting.MockPlugin {
-	return &coretesting.MockPlugin{
-		PluginMetadata: types.PluginMetadata{
-			Name:         name,
-			Version:      version,
-			Description:  description,
-			Author:       "Test",
-			Dependencies: deps,
-		},
-	}
-}
-
-// Helper function to check if a string is a valid semantic version
-func isValidSemVer(version string) bool {
-	// Simple validation: should contain only digits, dots, and hyphens
-	for _, ch := range version {
-		if !((ch >= '0' && ch <= '9') || ch == '.' || ch == '-' || (ch >= 'a' && ch <= 'z') || (ch >= 'A' && ch <= 'Z')) {
-			return false
-		}
-	}
-	return true
-}
-
-// Helper function to generate a valid plugin name
-func generateValidPluginName(base string) string {
-	// Ensure the name contains only valid characters
-	result := ""
-	for _, ch := range base {
-		if (ch >= 'a' && ch <= 'z') || (ch >= 'A' && ch <= 'Z') || (ch >= '0' && ch <= '9') || ch == '-' || ch == '_' {
-			result += string(ch)
-		}
-	}
-	if result == "" {
-		return "plugin"
-	}
-	return result
-}
-
-// Helper function to create a test registry with some plugins
-func createTestRegistry(pluginNames []string) *DefaultPluginRegistry {
-	registry := NewDefaultPluginRegistry()
-	for _, name := range pluginNames {
-		plugin := coretesting.NewMockPlugin(name)
-		registry.Register(plugin)
-	}
-	return registry
-}
-
-// Helper function to verify plugin count in registry
-func verifyPluginCount(registry *DefaultPluginRegistry, expectedCount int) bool {
-	plugins, err := registry.List(types.PluginFilter{})
-	if err != nil {
-		return false
-	}
-	return len(plugins) == expectedCount
-}
-
-// Helper function to create a dependency chain
-func createDependencyChain(names []string) []*coretesting.MockPlugin {
-	plugins := make([]*coretesting.MockPlugin, len(names))
-	for i, name := range names {
-		var deps []types.PluginDependency
-		if i > 0 {
-			// Each plugin depends on the previous one
-			deps = []types.PluginDependency{
-				{
-					PluginName: names[i-1],
-					Version:    ">=1.0.0",
-				},
-			}
-		}
-		plugins[i] = createPluginWithMetadata(name, "1.0.0", fmt.Sprintf("Plugin %s", name), deps)
-	}
-	return plugins
 }
