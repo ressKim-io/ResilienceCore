@@ -12,12 +12,19 @@
 
 Infrastructure Resilience Engine은 인프라 복원력 테스트 애플리케이션을 구축하기 위한 **완전히 불변인 프레임워크**입니다. 핵심 원칙은 **Core 수정 제로** - 모든 확장(새로운 환경, 플러그인, 저장소 백엔드, 모니터링 전략)은 Core 코드베이스를 건드리지 않고 잘 정의된 인터페이스를 통해 추가됩니다.
 
-**현재 상태**: 🚧 개발 중 - 명세 단계 완료
+**현재 상태**: 🚧 개발 중 - Phase 2 진행 중
 
 - ✅ 요구사항 정의 완료 (20개 요구사항)
 - ✅ 설계 완료 (98개 정확성 속성)
 - ✅ 구현 계획 준비 완료 (6단계, 50+ 작업)
-- 🚧 Phase 1: Core 인터페이스 및 모델 (진행 중)
+- ✅ Phase 1: Core 인터페이스 및 모델 완료
+- 🚧 Phase 2: 기본 구현체 (진행 중)
+  - ✅ ExecutionEngine 구현 완료
+  - ✅ Monitor 구현 완료
+  - ✅ Reporter 구현 완료
+  - ✅ EventBus 구현 완료 (NEW!)
+  - ⏳ Config 구현 예정
+  - ⏳ PluginRegistry 구현 예정
 
 ### 주요 기능
 
@@ -251,6 +258,44 @@ workflow:
       depends_on: [wait-for-failure]
       on_error: abort
 ```
+
+### 이벤트 버스
+
+컴포넌트 간 느슨한 결합을 위한 이벤트 기반 통신:
+
+```go
+// 이벤트 버스 생성
+bus := eventbus.NewInMemoryEventBus()
+defer bus.Close()
+
+// 이벤트 구독
+sub, err := bus.Subscribe(ctx, types.EventFilter{
+    Types:   []string{"resource.created"},
+    Sources: []string{"adapter"},
+})
+defer sub.Unsubscribe()
+
+// 이벤트 발행
+event := types.Event{
+    ID:        "evt-123",
+    Type:      "resource.created",
+    Source:    "adapter",
+    Timestamp: time.Now(),
+    Resource:  resource,
+}
+bus.Publish(ctx, event)
+
+// 이벤트 수신
+for event := range sub.Events() {
+    fmt.Printf("이벤트 수신: %s\n", event.ID)
+}
+```
+
+**주요 기능:**
+- 타입, 소스, 메타데이터로 유연한 이벤트 필터링
+- 동기/비동기 이벤트 발행
+- 스레드 안전한 구독 관리
+- 우아한 종료 처리
 
 ## 개발
 
