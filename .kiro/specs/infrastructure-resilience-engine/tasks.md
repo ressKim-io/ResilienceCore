@@ -381,7 +381,7 @@
 
 **목표**: docker-compose 및 Kubernetes 어댑터 구현
 
-- [ ] 24. ComposeAdapter 구현
+- [x] 24. ComposeAdapter 구현
   - Initialize 메서드 구현 (Docker 클라이언트 초기화)
   - ListResources 메서드 구현 (docker-compose.yml 파싱, 컨테이너 목록)
   - GetResource 메서드 구현
@@ -392,18 +392,18 @@
   - GetMetrics 메서드 구현 (docker stats API)
   - _요구사항: 4.1, 4.2, 4.3, 4.4_
 
-- [ ] 24.1 docker-compose.yml 파서 구현
+- [x] 24.1 docker-compose.yml 파서 구현
   - YAML 파싱
   - 서비스 정의를 Resource로 변환
   - Docker label 기반 매핑 (`com.docker.compose.service`)
   - _요구사항: 2.2_
 
-- [ ] 24.2 ComposeAdapter 통합 테스트 작성
+- [x] 24.2 ComposeAdapter 통합 테스트 작성
   - testcontainers-go 사용
   - 실제 컨테이너 생성/조작 테스트
   - 이벤트 감시 테스트
 
-- [ ] 24.3 ComposeAdapter 속성 기반 테스트 작성
+- [x] 24.3 ComposeAdapter 속성 기반 테스트 작성
   - **Property 7: Adapter conversion produces valid Resources**
   - **Property 9: Resource status is normalized across environments**
   - **Property 18: Watch emits ResourceEvent objects**
