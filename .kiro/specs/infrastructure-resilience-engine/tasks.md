@@ -226,7 +226,7 @@
   - **Property 78: Conditional execution works correctly**
   - **검증: 요구사항 5.4, 5.5, 16.1, 16.2, 16.3, 16.5**
 
-- [ ] 17. DefaultMonitor 구현
+- [x] 17. DefaultMonitor 구현
   - CheckHealth 메서드 구현 (전략 선택 및 실행)
   - WaitForCondition 메서드 구현 (폴링)
   - WaitForHealthy 메서드 구현
@@ -235,18 +235,18 @@
   - 헬스체크 전략 등록/조회 구현
   - _요구사항: 6.1, 6.2, 6.3, 6.4, 6.5_
 
-- [ ] 17.1 내장 헬스체크 전략 구현
+- [x] 17.1 내장 헬스체크 전략 구현
   - HTTPHealthCheckStrategy 구현
   - TCPHealthCheckStrategy 구현
   - ExecHealthCheckStrategy 구현
   - _요구사항: 6.5_
 
-- [ ] 17.2 Monitor 단위 테스트 작성
+- [x] 17.2 Monitor 단위 테스트 작성
   - 헬스체크 전략 선택 테스트
   - 조건 대기 테스트
   - 메트릭 수집 테스트
 
-- [ ] 17.3 Monitor 속성 기반 테스트 작성
+- [x] 17.3 Monitor 속성 기반 테스트 작성
   - **Property 28: Health check uses registered strategy**
   - **Property 29: Condition waiting polls until met or timeout**
   - **Property 30: Metrics collection delegates to adapter**
