@@ -652,14 +652,14 @@ func (m *MockReporter) GenerateReport(ctx context.Context, format string, filter
 	if !ok {
 		return nil, &StorageError{Message: "formatter not found"}
 	}
-	
+
 	// Generate some mock statistics
 	stats := Statistics{
 		TotalExecutions: 10,
 		SuccessCount:    8,
 		FailureCount:    2,
 	}
-	
+
 	return formatter.Format(ctx, stats)
 }
 
