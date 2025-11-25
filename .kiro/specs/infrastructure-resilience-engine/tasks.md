@@ -253,7 +253,7 @@
   - **검증: 요구사항 6.1, 6.2, 6.3**
 
 
-- [ ] 18. DefaultReporter 구현
+- [x] 18. DefaultReporter 구현
   - RecordEvent, RecordExecution 메서드 구현
   - QueryEvents, QueryExecutions 메서드 구현
   - ComputeStatistics 메서드 구현 (MTTR, 백분위수 계산)
@@ -261,24 +261,24 @@
   - 저장소 설정 및 포맷터 등록 구현
   - _요구사항: 7.1, 7.2, 7.3, 7.4, 7.5_
 
-- [ ] 18.1 InMemoryStorage 구현
+- [x] 18.1 InMemoryStorage 구현
   - Save, Load, Query, Delete 메서드 구현
   - 인메모리 맵 기반 저장소
   - _요구사항: 7.5_
 
-- [ ] 18.2 내장 리포트 포맷터 구현
+- [x] 18.2 내장 리포트 포맷터 구현
   - JSONFormatter 구현
   - MarkdownFormatter 구현
   - HTMLFormatter 구현 (선택사항)
   - _요구사항: 7.4_
 
-- [ ] 18.3 Reporter 단위 테스트 작성
+- [x] 18.3 Reporter 단위 테스트 작성
   - 이벤트/실행 기록 테스트
   - 쿼리 테스트
   - 통계 계산 테스트
   - 리포트 생성 테스트
 
-- [ ] 18.4 Reporter 속성 기반 테스트 작성
+- [x] 18.4 Reporter 속성 기반 테스트 작성
   - **Property 33: Execution record is complete**
   - **Property 34: Event record is complete**
   - **Property 35: Statistics are calculated correctly**

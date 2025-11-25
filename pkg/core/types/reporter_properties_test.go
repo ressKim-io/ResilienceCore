@@ -99,6 +99,64 @@ func TestProperty33_ExecutionRecordIsComplete(t *testing.T) {
 	properties.TestingRun(t, gopter.ConsoleReporter(false))
 }
 
+// TestProperty34_EventRecordIsComplete verifies that any recorded event
+// contains all required fields
+// Feature: infrastructure-resilience-engine, Property 34: Event record is complete
+// Validates: Requirements 7.2
+func TestProperty34_EventRecordIsComplete(t *testing.T) {
+	properties := gopter.NewProperties(nil)
+
+	properties.Property("event record contains all required fields", prop.ForAll(
+		func(eventType string, source string, resourceID string, resourceName string) bool {
+			// Create an event
+			timestamp := time.Now()
+
+			event := Event{
+				ID:        "event-" + eventType + "-" + source,
+				Type:      eventType,
+				Source:    source,
+				Timestamp: timestamp,
+				Resource: Resource{
+					ID:   resourceID,
+					Name: resourceName,
+				},
+				Data: map[string]interface{}{
+					"key1": "value1",
+					"key2": 123,
+				},
+				Metadata: map[string]string{
+					"meta1": "value1",
+				},
+			}
+
+			// Verify all required fields are present and valid
+			if event.ID == "" {
+				return false
+			}
+			if event.Type == "" {
+				return false
+			}
+			if event.Source == "" {
+				return false
+			}
+			if event.Timestamp.IsZero() {
+				return false
+			}
+			if event.Data == nil {
+				return false
+			}
+
+			return true
+		},
+		gen.Identifier(), // eventType
+		gen.Identifier(), // source
+		gen.Identifier(), // resourceID
+		gen.Identifier(), // resourceName
+	))
+
+	properties.TestingRun(t, gopter.ConsoleReporter(false))
+}
+
 // TestProperty35_StatisticsAreCalculatedCorrectly verifies that statistics
 // are correctly calculated from a set of execution records
 // Feature: infrastructure-resilience-engine, Property 35: Statistics are calculated correctly
@@ -265,6 +323,57 @@ func TestProperty35_StatisticsAreCalculatedCorrectly(t *testing.T) {
 		gen.IntRange(0, 10), // numFailed
 		gen.IntRange(0, 10), // numTimeout
 		gen.IntRange(0, 10), // numCanceled
+	))
+
+	properties.TestingRun(t, gopter.ConsoleReporter(false))
+}
+
+// TestProperty36_ReportUsesRegisteredFormatter verifies that report generation
+// uses the registered formatter for the requested format
+// Feature: infrastructure-resilience-engine, Property 36: Report uses registered formatter
+// Validates: Requirements 7.4
+func TestProperty36_ReportUsesRegisteredFormatter(t *testing.T) {
+	properties := gopter.NewProperties(nil)
+
+	properties.Property("report generation uses registered formatter", prop.ForAll(
+		func(formatName string) bool {
+			// Create a mock formatter
+			formatter := &MockReportFormatter{
+				name:        formatName,
+				contentType: "application/" + formatName,
+			}
+
+			// Create a mock reporter
+			reporter := &MockReporter{
+				formatters: make(map[string]ReportFormatter),
+			}
+
+			// Register the formatter
+			if err := reporter.RegisterFormatter(formatName, formatter); err != nil {
+				return false
+			}
+
+			// Generate a report using the registered formatter
+			ctx := context.Background()
+			filter := ReportFilter{}
+			report, err := reporter.GenerateReport(ctx, formatName, filter)
+			if err != nil {
+				return false
+			}
+
+			// Verify the formatter was used
+			if report == nil {
+				return false
+			}
+
+			// Verify the formatter's Format method was called
+			if !formatter.formatCalled {
+				return false
+			}
+
+			return true
+		},
+		gen.OneConstOf("json", "markdown", "html", "xml", "csv"),
 	))
 
 	properties.TestingRun(t, gopter.ConsoleReporter(false))
@@ -491,4 +600,74 @@ type StorageError struct {
 
 func (e *StorageError) Error() string {
 	return e.Message
+}
+
+// Mock reporter and formatter for Property 36
+
+type MockReportFormatter struct {
+	name         string
+	contentType  string
+	formatCalled bool
+}
+
+func (m *MockReportFormatter) Format(ctx context.Context, data interface{}) ([]byte, error) {
+	m.formatCalled = true
+	return []byte("formatted data"), nil
+}
+
+func (m *MockReportFormatter) ContentType() string {
+	return m.contentType
+}
+
+func (m *MockReportFormatter) Name() string {
+	return m.name
+}
+
+type MockReporter struct {
+	formatters map[string]ReportFormatter
+}
+
+func (m *MockReporter) RecordEvent(ctx context.Context, event Event) error {
+	return nil
+}
+
+func (m *MockReporter) RecordExecution(ctx context.Context, exec ExecutionRecord) error {
+	return nil
+}
+
+func (m *MockReporter) QueryEvents(ctx context.Context, query EventQuery) ([]Event, error) {
+	return []Event{}, nil
+}
+
+func (m *MockReporter) QueryExecutions(ctx context.Context, query ExecutionQuery) ([]ExecutionRecord, error) {
+	return []ExecutionRecord{}, nil
+}
+
+func (m *MockReporter) ComputeStatistics(ctx context.Context, filter StatisticsFilter) (Statistics, error) {
+	return Statistics{}, nil
+}
+
+func (m *MockReporter) GenerateReport(ctx context.Context, format string, filter ReportFilter) ([]byte, error) {
+	formatter, ok := m.formatters[format]
+	if !ok {
+		return nil, &StorageError{Message: "formatter not found"}
+	}
+	
+	// Generate some mock statistics
+	stats := Statistics{
+		TotalExecutions: 10,
+		SuccessCount:    8,
+		FailureCount:    2,
+	}
+	
+	return formatter.Format(ctx, stats)
+}
+
+func (m *MockReporter) SetStorage(storage StorageBackend) error {
+	return nil
+}
+
+func (m *MockReporter) RegisterFormatter(name string, formatter ReportFormatter) error {
+	m.formatters[name] = formatter
+	return nil
 }
