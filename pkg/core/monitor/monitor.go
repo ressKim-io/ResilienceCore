@@ -45,19 +45,26 @@ func (m *DefaultMonitor) registerBuiltInStrategies() {
 	httpStrategy := &types.HTTPHealthCheckStrategy{
 		ExpectedStatusCodes: []int{200},
 	}
-	_ = m.RegisterHealthCheckStrategy("http", httpStrategy)
+	if err := m.RegisterHealthCheckStrategy("http", httpStrategy); err != nil {
+		// This should never fail for built-in strategies, but handle it gracefully
+		panic(fmt.Sprintf("failed to register built-in http strategy: %v", err))
+	}
 
 	// TCP health check strategy
 	tcpStrategy := &types.TCPHealthCheckStrategy{
 		DialTimeout: 5 * time.Second,
 	}
-	_ = m.RegisterHealthCheckStrategy("tcp", tcpStrategy)
+	if err := m.RegisterHealthCheckStrategy("tcp", tcpStrategy); err != nil {
+		panic(fmt.Sprintf("failed to register built-in tcp strategy: %v", err))
+	}
 
 	// Exec health check strategy
 	execStrategy := &types.ExecHealthCheckStrategy{
 		ExpectedExitCode: 0,
 	}
-	_ = m.RegisterHealthCheckStrategy("exec", execStrategy)
+	if err := m.RegisterHealthCheckStrategy("exec", execStrategy); err != nil {
+		panic(fmt.Sprintf("failed to register built-in exec strategy: %v", err))
+	}
 }
 
 // CheckHealth checks the health of a resource using the appropriate strategy
