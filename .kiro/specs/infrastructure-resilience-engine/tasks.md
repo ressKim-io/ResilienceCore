@@ -337,7 +337,7 @@
   - **검증: 요구사항 9.1, 9.2, 9.3, 9.4**
 
 
-- [ ] 21. DefaultPluginRegistry 구현
+- [x] 21. DefaultPluginRegistry 구현
   - Register, Unregister 메서드 구현
   - Get, List 메서드 구현
   - Discover, DiscoverFromDirectory 메서드 구현
@@ -345,14 +345,14 @@
   - Reload 메서드 구현
   - _요구사항: 13.1, 13.2, 13.3, 13.4, 13.5, 18.1, 18.2, 18.3, 18.4, 18.5_
 
-- [ ] 21.1 PluginRegistry 단위 테스트 작성
+- [x] 21.1 PluginRegistry 단위 테스트 작성
   - 플러그인 등록/해제 테스트
   - 검증 테스트
   - 의존성 검증 테스트
   - 순환 의존성 감지 테스트
   - 필터링 테스트
 
-- [ ] 21.2 PluginRegistry 속성 기반 테스트 작성
+- [x] 21.2 PluginRegistry 속성 기반 테스트 작성
   - **Property 60: Plugin validation occurs on registration**
   - **Property 61: Plugin retrieval returns plugin or error**
   - **Property 62: Plugin listing supports filtering**

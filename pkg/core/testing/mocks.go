@@ -1180,3 +1180,69 @@ func (m *MockSubscription) matchesFilter(event types.Event) bool {
 
 	return true
 }
+
+// ============================================================================
+// Mock PluginLoader Implementation
+// ============================================================================
+
+// MockPluginLoader is a mock implementation of PluginLoader for testing
+type MockPluginLoader struct {
+	mu      sync.RWMutex
+	plugins map[string]types.Plugin
+
+	// Behavior configuration
+	LoadError   error
+	UnloadError error
+
+	// Call tracking
+	LoadCalls   int
+	UnloadCalls int
+}
+
+// NewMockPluginLoader creates a new MockPluginLoader
+func NewMockPluginLoader() *MockPluginLoader {
+	return &MockPluginLoader{
+		plugins: make(map[string]types.Plugin),
+	}
+}
+
+// Load loads a plugin from the specified path
+func (l *MockPluginLoader) Load(path string) (types.Plugin, error) {
+	l.mu.Lock()
+	defer l.mu.Unlock()
+
+	l.LoadCalls++
+
+	if l.LoadError != nil {
+		return nil, l.LoadError
+	}
+
+	plugin, exists := l.plugins[path]
+	if !exists {
+		return nil, fmt.Errorf("plugin not found at path: %s", path)
+	}
+
+	return plugin, nil
+}
+
+// Unload unloads a plugin
+func (l *MockPluginLoader) Unload(plugin types.Plugin) error {
+	l.mu.Lock()
+	defer l.mu.Unlock()
+
+	l.UnloadCalls++
+
+	if l.UnloadError != nil {
+		return l.UnloadError
+	}
+
+	return nil
+}
+
+// AddPlugin adds a plugin to the mock loader for testing
+func (l *MockPluginLoader) AddPlugin(path string, plugin types.Plugin) {
+	l.mu.Lock()
+	defer l.mu.Unlock()
+
+	l.plugins[path] = plugin
+}
